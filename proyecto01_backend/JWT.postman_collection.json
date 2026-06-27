@@ -1,0 +1,290 @@
+{
+  "info": {
+    "_postman_id": "f6417a3d-bf00-433a-a2d8-ea7c85cee1f1",
+    "name": "JWT",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "49380623",
+    "_collection_link": "https://go.postman.co/collection/49380623-f6417a3d-bf00-433a-a2d8-ea7c85cee1f1?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Login Exitoso",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"julian@gmail.com\",\r\n  \"password\": \"123456\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL_BASE3}}/api/auth/login",
+          "host": [
+            "{{URL_BASE3}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login Credenciales incorrectas",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"julian@gmail.com\",\r\n  \"password\": \"1234567\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL_BASE3}}/api/auth/login",
+          "host": [
+            "{{URL_BASE3}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Acceder a ruta protegida con token válido",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2YTE0ZTYzYWM5ODJkZmU1ZmFjYjJhOWYiLCJub21icmUiOiJKdWxpYW4iLCJyb2wiOiJ1c2VyIiwiaWF0IjoxNzgwMTg5ODUwLCJleHAiOjE3ODAxOTA3NTB9.szv39q8M78DHlWA6h2YTuLMANSmqgYKjT-5SePYfV1Y",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL_BASE3}}/api/usuario",
+          "host": [
+            "{{URL_BASE3}}"
+          ],
+          "path": [
+            "api",
+            "usuario"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Acceder a ruta protegida sin token válido",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL_BASE3}}/api/usuario",
+          "host": [
+            "{{URL_BASE3}}"
+          ],
+          "path": [
+            "api",
+            "usuario"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Renovar Access Token con Refresh Token",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2YTE0ZTYzYWM5ODJkZmU1ZmFjYjJhOWYiLCJpYXQiOjE3ODAxOTAzNjEsImV4cCI6MTc4MDc5NTE2MX0.HJxMO4iYiNO0dtuqMgk39oQIgW8JAdHSZWKw1JW5ZlI\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL_BASE3}}/api/auth/refresh-token",
+          "host": [
+            "{{URL_BASE3}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "refresh-token"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Refresh Token inválido",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"refreshToken\": \"tokendepruebainvalido\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL_BASE3}}/api/auth/refresh-token",
+          "host": [
+            "{{URL_BASE3}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "refresh-token"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Logout",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2YTE0ZTYzYWM5ODJkZmU1ZmFjYjJhOWYiLCJpYXQiOjE3ODAxOTAzNjEsImV4cCI6MTc4MDc5NTE2MX0.HJxMO4iYiNO0dtuqMgk39oQIgW8JAdHSZWKw1JW5ZlI\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL_BASE3}}/api/auth/logout",
+          "host": [
+            "{{URL_BASE3}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "logout"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Prueba de refresh Token después del logout",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2YTE0ZTYzYWM5ODJkZmU1ZmFjYjJhOWYiLCJpYXQiOjE3ODAxOTAzNjEsImV4cCI6MTc4MDc5NTE2MX0.HJxMO4iYiNO0dtuqMgk39oQIgW8JAdHSZWKw1JW5ZlI\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL_BASE3}}/api/auth/logout",
+          "host": [
+            "{{URL_BASE3}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "logout"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "URL_BASE4",
+      "value": ""
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "refreshToken",
+      "value": ""
+    }
+  ]
+}

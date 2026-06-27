@@ -1,0 +1,287 @@
+{
+  "info": {
+    "_postman_id": "9f2aef74-e5dc-4a44-9e2e-7e8a6cf8ee9f",
+    "name": "Mini CRM - Productos",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "49380623",
+    "_collection_link": "https://go.postman.co/collection/49380623-9f2aef74-e5dc-4a44-9e2e-7e8a6cf8ee9f?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Post productos",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"nombre\": \"Laptop Alienware\",\r\n  \"codigo_sku\": \"ELE-1003\",\r\n  \"categoria\": \"Electronica\",\r\n  \"precio\": 1299.99,\r\n  \"stock\": 15,\r\n  \"descripcion\": \"Laptop HP 15 pulgadas\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL_BASE}}/api/productos",
+          "host": [
+            "{{URL_BASE}}"
+          ],
+          "path": [
+            "api",
+            "productos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Post productos sku-generado aleatoriamente",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// Generar SKU aleatorio válido\r",
+              "const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';\r",
+              "const prefix = Array.from({length: 3}, () =>\r",
+              "  letters[Math.floor(Math.random()*26)]).join('');\r",
+              "const nums = String(Math.floor(Math.random()*9000)+1000);\r",
+              "pm.environment.set('sku_generado', `${prefix}-${nums}`);\r",
+              "// → Genera: \"ELE-4827\", \"HOG-2391\", etc."
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"nombre\": \"Laptop Alienware\",\r\n  \"codigo_sku\": \"{{sku_generado}}\",\r\n  \"categoria\": \"Electronica\",\r\n  \"precio\": 1299.99,\r\n  \"stock\": 15,\r\n  \"descripcion\": \"Laptop HP 15 pulgadas\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL_BASE}}/api/productos",
+          "host": [
+            "{{URL_BASE}}"
+          ],
+          "path": [
+            "api",
+            "productos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Post productos (E regex)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"nombre\": \"Teclado\",\r\n  \"codigo_sku\": \"teclado123\",\r\n  \"categoria\": \"Oficina\",\r\n  \"precio\": 25.00\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL_BASE}}/api/productos",
+          "host": [
+            "{{URL_BASE}}"
+          ],
+          "path": [
+            "api",
+            "productos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Post productos (E enum)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"nombre\": \"Silla\",\r\n  \"codigo_sku\": \"HOG-2001\",\r\n  \"categoria\": \"Deportes\",\r\n  \"precio\": 120.00\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL_BASE}}/api/productos",
+          "host": [
+            "{{URL_BASE}}"
+          ],
+          "path": [
+            "api",
+            "productos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Eliminar producto/id",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL_BASE}}/api/productos/6a0a61d00b0cdce208b1694c",
+          "host": [
+            "{{URL_BASE}}"
+          ],
+          "path": [
+            "api",
+            "productos",
+            "6a0a61d00b0cdce208b1694c"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get productos",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"nombre\": \"Silla\",\r\n  \"codigo_sku\": \"HOG-2001\",\r\n  \"categoria\": \"Deportes\",\r\n  \"precio\": 120.00\r\n}"
+        },
+        "url": {
+          "raw": "{{URL_BASE}}/api/productos",
+          "host": [
+            "{{URL_BASE}}"
+          ],
+          "path": [
+            "api",
+            "productos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get productos mediante id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{URL_BASE}}/api/productos/6a0a5fba230e2659e5c52262",
+          "host": [
+            "{{URL_BASE}}"
+          ],
+          "path": [
+            "api",
+            "productos",
+            "6a0a5fba230e2659e5c52262"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Put Actualizar productos",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"nombre\": \"Laptop HP actualizada\",\r\n  \"codigo_sku\": \"ELE-1001\",\r\n  \"categoria\": \"Electronica\",\r\n  \"precio\": 499.99,\r\n  \"stock\": 8,\r\n  \"descripcion\": \"Precio rebajado\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL_BASE}}/api/productos/6a0a5fba230e2659e5c52262",
+          "host": [
+            "{{URL_BASE}}"
+          ],
+          "path": [
+            "api",
+            "productos",
+            "6a0a5fba230e2659e5c52262"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "// Generar SKU aleatorio válido\r",
+          "const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';\r",
+          "const prefix = Array.from({length: 3}, () =>\r",
+          "  letters[Math.floor(Math.random()*26)]).join('');\r",
+          "const nums = String(Math.floor(Math.random()*9000)+1000);\r",
+          "pm.environment.set('sku_generado', `${prefix}-${nums}`);\r",
+          "// → Genera: \"ELE-4827\", \"HOG-2391\", etc."
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "pm.test('Status 201', () => {\r",
+          "    pm.response.to.have.status(201);\r",
+          "});\r",
+          "\r",
+          "pm.test('Tiene _id', () => {\r",
+          "    const body = pm.response.json();\r",
+          "    pm.expect(body.producto._id).to.be.a('string');\r",
+          "});\r",
+          "\r",
+          "pm.test('Tiene timestamps', () => {\r",
+          "    const body = pm.response.json();\r",
+          "    pm.expect(body.producto.createdAt).to.exist;\r",
+          "    pm.expect(body.producto.updatedAt).to.exist;\r",
+          "});"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "URL_BASE",
+      "value": ""
+    }
+  ]
+}

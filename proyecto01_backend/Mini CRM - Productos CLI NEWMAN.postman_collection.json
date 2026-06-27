@@ -1,0 +1,187 @@
+{
+  "info": {
+    "_postman_id": "2bcd8f49-180e-415f-aca6-02ffe66a991a",
+    "name": "Mini CRM - Productos CLI NEWMAN",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Post productos",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';",
+              "const prefix = Array.from({length: 3}, () =>",
+              "letters[Math.floor(Math.random()*26)]).join('');",
+              "const nums = String(Math.floor(Math.random()*9000)+1000);",
+              "pm.environment.set('sku_generado', `${prefix}-${nums}`);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 201', () => {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test('Tiene _id', () => {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.producto._id).to.be.a('string');",
+              "});",
+              "",
+              "pm.test('Tiene timestamps', () => {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.producto.createdAt).to.exist;",
+              "    pm.expect(body.producto.updatedAt).to.exist;",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Laptop Alienware CLI\",\n  \"codigo_sku\": \"{{sku_generado}}\",\n  \"categoria\": \"Electronica\",\n  \"precio\": 1299.99,\n  \"stock\": 15,\n  \"descripcion\": \"Laptop HP 15 pulgadas\"\n}"
+        },
+        "url": {
+          "raw": "{{URL_BASE}}/api/productos",
+          "host": [
+            "{{URL_BASE}}"
+          ],
+          "path": [
+            "api",
+            "productos"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Post productos sku-generado aleatoriamente",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';",
+              "const prefix = Array.from({length: 3}, () =>",
+              "letters[Math.floor(Math.random()*26)]).join('');",
+              "const nums = String(Math.floor(Math.random()*9000)+1000);",
+              "pm.environment.set('sku_generado', `${prefix}-${nums}`);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 201', () => {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test('Tiene _id', () => {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.producto._id).to.be.a('string');",
+              "});",
+              "",
+              "pm.test('Tiene timestamps', () => {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.producto.createdAt).to.exist;",
+              "    pm.expect(body.producto.updatedAt).to.exist;",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Laptop Alienware CLI SKU GENERADO\",\n  \"codigo_sku\": \"{{sku_generado}}\",\n  \"categoria\": \"Electronica\",\n  \"precio\": 1299.99,\n  \"stock\": 15,\n  \"descripcion\": \"Laptop HP 15 pulgadas\"\n}"
+        },
+        "url": {
+          "raw": "{{URL_BASE}}/api/productos",
+          "host": [
+            "{{URL_BASE}}"
+          ],
+          "path": [
+            "api",
+            "productos"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get productos",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', () => {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Respuesta contiene productos', () => {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.productos).to.be.an('array');",
+              "});",
+              "",
+              "pm.test('Primer producto tiene _id', () => {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.productos[0]._id).to.be.a('string');",
+              "});",
+              "",
+              "pm.test('Primer producto tiene timestamps', () => {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.productos[0].createdAt).to.exist;",
+              "    pm.expect(body.productos[0].updatedAt).to.exist;",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{URL_BASE}}/api/productos",
+          "host": [
+            "{{URL_BASE}}"
+          ],
+          "path": [
+            "api",
+            "productos"
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "URL_BASE",
+      "value": "http://localhost:3000"
+    }
+  ]
+}

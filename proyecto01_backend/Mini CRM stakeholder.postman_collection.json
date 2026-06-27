@@ -1,0 +1,499 @@
+{
+  "info": {
+    "_postman_id": "fd31ad69-525b-45a2-a7c1-afd8c7c01486",
+    "name": "Mini CRM stakeholder",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "49380623",
+    "_collection_link": "https://go.postman.co/collection/49380623-fd31ad69-525b-45a2-a7c1-afd8c7c01486?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Post stake holders(cliente)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// Limpia el ID anterior para evitar confusión\r",
+              "pm.environment.unset(\"stakeholder_id1\");\r",
+              "console.log(\"ID anterior limpiado. Listo para crear nuevo stakeholder.\");"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status 201 - Creado exitosamente\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Respuesta tiene _id\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    pm.expect(json.data).to.have.property(\"_id\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"success es true\", function () {\r",
+              "    pm.expect(pm.response.json().success).to.eql(true);\r",
+              "});\r",
+              "\r",
+              "//  Guarda el ID dinámicamente\r",
+              "const json = pm.response.json();\r",
+              "if (json.data && json.data._id) {\r",
+              "    pm.environment.set(\"stakeholder_id1\", json.data._id);\r",
+              "    console.log(\"ID guardado automáticamente:\", json.data._id);\r",
+              "} else {\r",
+              "    console.error(\" No se pudo guardar el ID. Revisa la respuesta.\");\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n\"type\": \"CLIENTE\",\r\n\"nombre\": \"Carlos Mendoza\",\r\n\"identificacion\": \"CLI-90876\",\r\n\"email\": \"carlos@email.com\",\r\n\"telefono\": \"67890123\",\r\n\"direccion\": \"Ciudad de Panamá\",\r\n\"nivelFidelidad\": \"ORO\",\r\n\"limiteCredito\": 5000,\r\n\"historialCompras\": [\r\n{\r\n\"producto\": \"Laptop\",\r\n\"monto\": 1200,\r\n\"fecha\": \"2025-01-15\"\r\n}\r\n]\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL_BASE2}}/api/stakeholder",
+          "host": [
+            "{{URL_BASE2}}"
+          ],
+          "path": [
+            "api",
+            "stakeholder"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Post stake holders(proveedor)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status 201 - Creado exitosamente\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Respuesta tiene _id\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    pm.expect(json.data).to.have.property(\"_id\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"success es true\", function () {\r",
+              "    pm.expect(pm.response.json().success).to.eql(true);\r",
+              "});\r",
+              "\r",
+              "//  Guarda el ID dinámicamente\r",
+              "const json = pm.response.json();\r",
+              "if (json.data && json.data._id) {\r",
+              "    pm.environment.set(\"stakeholder_id2\", json.data._id);\r",
+              "    console.log(\"ID guardado automáticamente:\", json.data._id);\r",
+              "} else {\r",
+              "    console.error(\" No se pudo guardar el ID. Revisa la respuesta.\");\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// Limpia el ID anterior para evitar confusión\r",
+              "pm.environment.unset(\"stakeholder_id2\");\r",
+              "console.log(\"ID anterior limpiado. Listo para crear nuevo stakeholder.\");"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n\"type\": \"PROVEEDOR\",\r\n\"nombre\": \"Jessibel Corp\",\r\n\"identificacion\": \"PROV-5543\",\r\n\"email\": \"ventas@techsupply.com\",\r\n\"telefono\": \"61234567\",\r\n\"direccion\": \"Costa Rica\",\r\n\"categoriaProveedor\": \"TECNOLOGIA\",\r\n\"paisOrigen\": \"Costa Rica\",\r\n\"certificaciones\": [\r\n\"ISO9001\",\r\n\"ISO27001\"\r\n],\r\n\"tiempoEntregaPromedio\": 5\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL_BASE2}}/api/stakeholder",
+          "host": [
+            "{{URL_BASE2}}"
+          ],
+          "path": [
+            "api",
+            "stakeholder"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get stake holders(proveedor)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// Verifica que el ID exista antes de hacer el GET\r",
+              "const id = pm.environment.get(\"stakeholder_id2\");\r",
+              "if (!id) {\r",
+              "    throw new Error(\" stakeholder_id está vacío. Ejecuta el POST primero.\");\r",
+              "}\r",
+              "console.log(\"Buscando stakeholder con ID:\", id);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status 200 - Encontrado\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"success es true\", function () {\r",
+              "    pm.expect(pm.response.json().success).to.eql(true);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Retorna un array de proveedores\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    pm.expect(json.data).to.be.an(\"array\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Todos los registros son PROVEEDOR\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    json.data.forEach(item => {\r",
+              "        pm.expect(item.type).to.eql(\"PROVEEDOR\");\r",
+              "    });\r",
+              "});\r",
+              "\r",
+              "console.log(\"Proveedores encontrados:\", pm.response.json().total);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n\"type\": \"PROVEEDOR\",\r\n\"nombre\": \"Jessibel Corp\",\r\n\"identificacion\": \"PROV-5543\",\r\n\"email\": \"ventas@techsupply.com\",\r\n\"telefono\": \"61234567\",\r\n\"direccion\": \"Costa Rica\",\r\n\"categoriaProveedor\": \"TECNOLOGIA\",\r\n\"paisOrigen\": \"Costa Rica\",\r\n\"certificaciones\": [\r\n\"ISO9001\",\r\n\"ISO27001\"\r\n],\r\n\"tiempoEntregaPromedio\": 5\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL_BASE2}}/api/stakeholder/proveedores",
+          "host": [
+            "{{URL_BASE2}}"
+          ],
+          "path": [
+            "api",
+            "stakeholder",
+            "proveedores"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get stake holders(clientes)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// Verifica que el ID exista antes de hacer el GET\r",
+              "const id = pm.environment.get(\"stakeholder_id1\");\r",
+              "if (!id) {\r",
+              "    throw new Error(\" stakeholder_id está vacío. Ejecuta el POST primero.\");\r",
+              "}\r",
+              "console.log(\"Buscando stakeholder con ID:\", id);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status 200 - Encontrado\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"success es true\", function () {\r",
+              "    pm.expect(pm.response.json().success).to.eql(true);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Retorna un array de clientes\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    pm.expect(json.data).to.be.an(\"array\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Todos los registros son CLIENTE\", function () {\r",
+              "    const json = pm.response.json();\r",
+              "    json.data.forEach(item => {\r",
+              "        pm.expect(item.type).to.eql(\"CLIENTE\");\r",
+              "    });\r",
+              "});\r",
+              "\r",
+              "console.log(\"Clientes encontrados:\", pm.response.json().total);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n\"type\": \"PROVEEDOR\",\r\n\"nombre\": \"Jessibel Corp\",\r\n\"identificacion\": \"PROV-5543\",\r\n\"email\": \"ventas@techsupply.com\",\r\n\"telefono\": \"61234567\",\r\n\"direccion\": \"Costa Rica\",\r\n\"categoriaProveedor\": \"TECNOLOGIA\",\r\n\"paisOrigen\": \"Costa Rica\",\r\n\"certificaciones\": [\r\n\"ISO9001\",\r\n\"ISO27001\"\r\n],\r\n\"tiempoEntregaPromedio\": 5\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL_BASE2}}/api/stakeholder/clientes",
+          "host": [
+            "{{URL_BASE2}}"
+          ],
+          "path": [
+            "api",
+            "stakeholder",
+            "clientes"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Put de cliente",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const id = pm.environment.get(\"stakeholder_id1\");\r",
+              "if (!id) {\r",
+              "    throw new Error(\" stakeholder_id está vacío. Ejecuta el POST primero.\");\r",
+              "}\r",
+              "console.log(\"Actualizando stakeholder con ID:\", id);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status 200 - Actualizado\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"success es true\", function () {\r",
+              "    pm.expect(pm.response.json().success).to.eql(true);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Mensaje confirma actualización\", function () {\r",
+              "    pm.expect(pm.response.json().mensaje).to.include(\"actualizado\");\r",
+              "});\r",
+              "\r",
+              "const json = pm.response.json();\r",
+              "if (json.data && json.data._id) {\r",
+              "    pm.environment.set(\"stakeholder_id1\", json.data._id);\r",
+              "    console.log(\"ID reconfirmado tras PUT:\", json.data._id);\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n\"telefono\": \"65996767\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL_BASE2}}/api/stakeholder/{{stakeholder_id1}}",
+          "host": [
+            "{{URL_BASE2}}"
+          ],
+          "path": [
+            "api",
+            "stakeholder",
+            "{{stakeholder_id1}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Put de proveedores",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status 200 - Actualizado\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"success es true\", function () {\r",
+              "    pm.expect(pm.response.json().success).to.eql(true);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Mensaje confirma actualización\", function () {\r",
+              "    pm.expect(pm.response.json().mensaje).to.include(\"actualizado\");\r",
+              "});\r",
+              "\r",
+              "const json = pm.response.json();\r",
+              "if (json.data && json.data._id) {\r",
+              "    pm.environment.set(\"stakeholder_id2\", json.data._id);\r",
+              "    console.log(\"ID reconfirmado tras PUT:\", json.data._id);\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const id = pm.environment.get(\"stakeholder_id2\");\r",
+              "if (!id) {\r",
+              "    throw new Error(\" stakeholder_id está vacío. Ejecuta el POST primero.\");\r",
+              "}\r",
+              "console.log(\"Actualizando stakeholder con ID:\", id);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n\"telefono\": \"67895251\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL_BASE2}}/api/stakeholder/{{stakeholder_id2}}",
+          "host": [
+            "{{URL_BASE2}}"
+          ],
+          "path": [
+            "api",
+            "stakeholder",
+            "{{stakeholder_id2}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "URL_BASE2",
+      "value": ""
+    },
+    {
+      "key": "stakeholder_id1",
+      "value": ""
+    },
+    {
+      "key": "stakeholder_id2",
+      "value": ""
+    }
+  ]
+}
