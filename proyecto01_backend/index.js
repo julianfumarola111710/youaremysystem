@@ -13,12 +13,6 @@ const authRoutes = require('./src/routes/authRoutes');
 
 const app = express();
 
-app.use(express.static(path.join(__dirname, '../frontend/dist/frontend/browser')));
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/dist/frontend/browser/index.html'));
-});
-
 // Conectar base de datos
 conectarDB();
 
@@ -26,19 +20,18 @@ conectarDB();
 app.use(cors());
 app.use(express.json());
 
-// Registrar rutas
+// Registrar rutas de la API
 app.use('/api/auth', authRoutes);
 app.use('/api/usuario', usuarioRoutes);
 app.use('/api/productos', productosRoutes);
 app.use('/api/stakeholder', stakeholderRoutes);
 
-// Ruta de prueba
-app.get('/', (req, res) => {
+// Servir el build de Angular
+app.use(express.static(path.join(__dirname, '../frontend/dist/frontend/browser')));
 
-  res.sendFile(
-    path.join(__dirname, 'public', 'nopostman.html')
-  );
-
+// Catch-all: cualquier ruta que no sea /api/* devuelve el index.html de Angular
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/dist/frontend/browser/index.html'));
 });
 
 const PORT = process.env.PORT || 3000;
