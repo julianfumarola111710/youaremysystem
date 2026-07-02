@@ -12,6 +12,13 @@ const stakeholderRoutes = require('./src/routes/stakeholderRoutes');
 const authRoutes = require('./src/routes/authRoutes');
 
 const app = express();
+const path = require('path');
+
+app.use(express.static(path.join(__dirname, '../frontend/dist/frontend/browser')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/dist/frontend/browser/index.html'));
+});
 
 // Conectar base de datos
 conectarDB();
