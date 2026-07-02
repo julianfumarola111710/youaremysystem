@@ -1,4 +1,21 @@
-<h1>Dashboard CRM</h1>
-<p>Bienvenido al sistema</p>
+<div class="dashboard-page">
 
-<button (click)="logout()">Cerrar sesión</button>
+  <header class="dashboard-header">
+    <div class="header-brand">
+      <img src="assets/logopitahaya.png" alt="Pitahaya CRM" class="header-logo">
+      <span class="header-title">PITAHAYA <strong>CRM</strong></span>
+    </div>
+
+    <button class="btn-logout" (click)="logout()">
+      Cerrar sesión
+    </button>
+  </header>
+
+  <main class="dashboard-content">
+    <div class="welcome-card">
+      <h1>Dashboard CRM</h1>
+      <p>Bienvenido al sistema</p>
+    </div>
+  </main>
+
+</div>
