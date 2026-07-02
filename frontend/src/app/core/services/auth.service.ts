@@ -24,17 +24,33 @@ export class AuthService {
     );
   }
 
-  logout(): void {
+  /* Logout profesional — devuelve Observable para que
+     el componente redirija solo cuando el backend confirmó */
+  logout(): Observable<any> {
     const refreshToken = this.tokenService.getRefreshToken();
+    return this.http.post(
+      `${this.apiUrl}/auth/logout`,
+      { refreshToken }
+    );
+  }
 
-    this.http.post(`${this.apiUrl}/auth/logout`, { refreshToken }).subscribe({
-      next: () => {
-        console.log('LOGOUT EXITOSO');
-      },
-      error: (error) => {
-        console.error('ERROR LOGOUT');
-        console.error(error);
+  /* Actualizar únicamente el Access Token */
+  updateAccessToken(accessToken: string): void {
+    localStorage.setItem('accessToken', accessToken);
+  }
+
+  /* Obtener Refresh Token */
+  getRefreshToken(): string | null {
+    return localStorage.getItem('refreshToken');
+  }
+
+  /* Solicitar un nuevo Access Token al backend */
+  refreshAccessToken() {
+    return this.http.post(
+      `${this.apiUrl}/auth/refresh`,
+      {
+        refreshToken: this.getRefreshToken()
       }
-    });
+    );
   }
 }

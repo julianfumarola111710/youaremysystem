@@ -18,8 +18,20 @@ export class DashboardComponent {
   ) { }
 
   logout(): void {
-    this.authService.logout();
-    this.tokenService.clearSession();
-    this.router.navigate(['/login']);
+    this.authService.logout().subscribe({
+      next: () => {
+        /* Backend confirmó — ahora sí limpiamos y redirigimos */
+        this.tokenService.clearSession();
+        this.router.navigate(['/login']);
+        console.log('LOGOUT EXITOSO');
+      },
+      error: () => {
+        /* Si el backend falla, igual limpiamos localmente
+           para no dejar al usuario atrapado */
+        this.tokenService.clearSession();
+        this.router.navigate(['/login']);
+        console.error('LOGOUT con error de backend — sesión limpiada localmente');
+      }
+    });
   }
 }

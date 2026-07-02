@@ -1,4 +1,4 @@
-const Stakeholder = require("../models/Stakeholder");
+const Stakeholder = require("../models/stakeholder");
 
 // ── 1. Crear Stakeholder (POST) ───────────────────────────────────────────────
 const crearStakeholder = async (req, res) => {
