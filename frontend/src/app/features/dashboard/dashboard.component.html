@@ -1,21 +1,113 @@
 <div class="dashboard-page">
 
   <header class="dashboard-header">
+
     <div class="header-brand">
-      <img src="logopitahaya.png" alt="Pitahaya CRM" class="header-logo">
-      <span class="header-title">PITAHAYA <strong>CRM</strong></span>
+      <img src="logopitahaya.png"
+           alt="Pitahaya CRM"
+           class="header-logo">
+
+      <span class="header-title">
+        PITAHAYA <strong>CRM</strong>
+      </span>
     </div>
 
-    <button class="btn-logout" (click)="logout()">
+    <button
+      class="btn-logout"
+      (click)="logout()">
+
       Cerrar sesión
+
     </button>
+
   </header>
 
   <main class="dashboard-content">
+
     <div class="welcome-card">
+
       <h1>Dashboard CRM</h1>
-      <p>Bienvenido al sistema</p>
+
+      <p>
+        Bienvenido
+      </p>
+
     </div>
+
+    <div class="menu-grid">
+
+      <div
+        class="menu-card"
+        routerLink="/clientes">
+
+        👥
+
+        <h3>Clientes</h3>
+
+      </div>
+
+      <div
+        class="menu-card"
+        routerLink="/productos">
+
+        📦
+
+        <h3>Productos</h3>
+
+      </div>
+
+      <div
+        class="menu-card"
+        routerLink="/ventas">
+
+        💰
+
+        <h3>Ventas</h3>
+
+      </div>
+
+      <div
+        class="menu-card"
+        routerLink="/actividades">
+
+        📅
+
+        <h3>Actividades</h3>
+
+      </div>
+
+      <div
+        class="menu-card"
+        routerLink="/tickets">
+
+        🎫
+
+        <h3>Tickets</h3>
+
+      </div>
+
+      <div
+        class="menu-card"
+        routerLink="/notificaciones">
+
+        🔔
+
+        <h3>Notificaciones</h3>
+
+      </div>
+
+      <div
+        class="menu-card"
+        routerLink="/usuario">
+
+        👤
+
+        <h3>Usuarios</h3>
+
+      </div>
+
+    </div>
+
   </main>
 
 </div>

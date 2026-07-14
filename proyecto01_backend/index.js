@@ -10,6 +10,7 @@ const usuarioRoutes = require('./src/routes/usuarioRoutes');
 const productosRoutes = require('./src/routes/productosRoutes');
 const stakeholderRoutes = require('./src/routes/stakeholderRoutes');
 const authRoutes = require('./src/routes/authRoutes');
+const clientesRoutes = require('./src/routes/clientesRoutes');
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/usuario', usuarioRoutes);
 app.use('/api/productos', productosRoutes);
 app.use('/api/stakeholder', stakeholderRoutes);
+app.use('/api/clientes', clientesRoutes);
 
 // Servir el build de Angular
 app.use(express.static(path.join(__dirname, '../frontend/dist/frontend/browser')));

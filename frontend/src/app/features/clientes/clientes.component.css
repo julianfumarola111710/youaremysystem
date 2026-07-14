@@ -1,0 +1,241 @@
+.clientes-page{
+
+    padding:40px;
+
+    background:#f5f7fb;
+
+    min-height:100vh;
+
+}
+
+.clientes-header{
+
+    margin-bottom:30px;
+
+}
+
+.clientes-header h1{
+
+    margin:0;
+
+    color:#333;
+
+}
+
+.clientes-header p{
+
+    color:#777;
+
+}
+
+.clientes-container{
+
+    display:grid;
+
+    grid-template-columns:350px 1fr;
+
+    gap:25px;
+
+}
+
+.form-card{
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:12px;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+
+}
+
+.form-card h2{
+
+    margin-bottom:20px;
+
+}
+
+.form-group{
+
+    margin-bottom:15px;
+
+}
+
+.form-group label{
+
+    display:block;
+
+    margin-bottom:6px;
+
+    font-weight:600;
+
+}
+
+.form-group input{
+
+    width:100%;
+
+    padding:10px;
+
+    border:1px solid #ccc;
+
+    border-radius:8px;
+
+    box-sizing:border-box;
+
+}
+
+.botones{
+
+    display:flex;
+
+    gap:10px;
+
+    margin-top:20px;
+
+}
+
+.btn-guardar{
+
+    flex:1;
+
+    border:none;
+
+    background:#4CAF50;
+
+    color:white;
+
+    padding:12px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+}
+
+.btn-cancelar{
+
+    flex:1;
+
+    border:none;
+
+    background:#9e9e9e;
+
+    color:white;
+
+    padding:12px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+}
+
+.table-card{
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:12px;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+
+    overflow:auto;
+
+}
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+thead{
+
+    background:#4CAF50;
+
+    color:white;
+
+}
+
+th,td{
+
+    padding:12px;
+
+    text-align:left;
+
+    border-bottom:1px solid #ddd;
+
+}
+
+.btn-editar{
+
+    background:#2196F3;
+
+    color:white;
+
+    border:none;
+
+    padding:8px 12px;
+
+    border-radius:6px;
+
+    cursor:pointer;
+
+    margin-right:6px;
+
+}
+
+.btn-eliminar{
+
+    background:#F44336;
+
+    color:white;
+
+    border:none;
+
+    padding:8px 12px;
+
+    border-radius:6px;
+
+    cursor:pointer;
+
+}
+
+.btn-editar:hover{
+
+    background:#1976D2;
+
+}
+
+.btn-eliminar:hover{
+
+    background:#D32F2F;
+
+}
+
+.btn-guardar:hover{
+
+    background:#43A047;
+
+}
+
+.btn-cancelar:hover{
+
+    background:#757575;
+
+}
+
+@media(max-width:900px){
+
+    .clientes-container{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
