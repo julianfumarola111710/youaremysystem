@@ -27,8 +27,11 @@ const clienteSchema = new mongoose.Schema({
         lowercase: true
     }
 
-}, {
-    timestamps: true
+},
+{
+    timestamps: true,
+
+    collection: 'Clientes'
 });
 
 module.exports = mongoose.model('Cliente', clienteSchema);
