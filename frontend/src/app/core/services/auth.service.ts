@@ -33,7 +33,11 @@ export class AuthService {
       { refreshToken }
     );
   }
+getAccessToken(): string | null {
 
+  return localStorage.getItem('accessToken');
+
+}
   /* Actualizar únicamente el Access Token */
   updateAccessToken(accessToken: string): void {
     localStorage.setItem('accessToken', accessToken);
