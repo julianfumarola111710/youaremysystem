@@ -1,86 +1,133 @@
-<div class="clientes-page">
+<div class="dashboard-page">
 
-    <header class="clientes-header">
+    <!-- SIDEBAR -->
 
-        <div>
-            <h1>Clientes</h1>
-            <p>Administración de clientes</p>
+    <aside class="sidebar">
+
+        <div class="logo-area">
+
+            <img
+                src="logopitahaya.png"
+                class="logo">
+
+            <h2>PITAHAYA CRM</h2>
+
         </div>
 
-    </header>
+        <nav>
 
-    <div class="clientes-container">
+            <button routerLink="/dashboard">
+                🏠 Dashboard
+            </button>
 
-        <!-- ========================= -->
-        <!-- Formulario -->
-        <!-- ========================= -->
+            <button routerLink="/usuarios">
+                👤 Usuarios
+            </button>
 
-        <div class="form-card">
+            <button class="activo" routerLink="/clientes">
+                👥 Clientes
+            </button>
 
-            <h2>
-                {{ clienteSeleccionado ? 'Editar Cliente' : 'Nuevo Cliente' }}
-            </h2>
+            <button routerLink="/productos">
+                📦 Productos
+            </button>
+
+            <button routerLink="/ventas">
+                💰 Ventas
+            </button>
+
+            <button routerLink="/actividades">
+                📅 Actividades
+            </button>
+
+            <button routerLink="/tickets">
+                🎫 Tickets
+            </button>
+
+            <button routerLink="/notificaciones">
+                🔔 Notificaciones
+            </button>
+
+        </nav>
+
+    </aside>
+
+    <!-- CONTENIDO -->
+
+    <main class="contenido">
+
+        <div class="card">
+
+            <h1>Gestión de Clientes</h1>
 
             <form
                 [formGroup]="clienteForm"
                 (ngSubmit)="guardarCliente()">
 
-                <div class="form-group">
+                <div class="fila">
 
-                    <label>Nombre</label>
+                    <div class="campo">
 
-                    <input
-                        type="text"
-                        formControlName="nombre">
+                        <label>Nombre</label>
 
-                </div>
+                        <input
+                            type="text"
+                            formControlName="nombre">
 
-                <div class="form-group">
+                    </div>
 
-                    <label>Empresa</label>
+                    <div class="campo">
 
-                    <input
-                        type="text"
-                        formControlName="empresa">
+                        <label>Empresa</label>
 
-                </div>
+                        <input
+                            type="text"
+                            formControlName="empresa">
 
-                <div class="form-group">
-
-                    <label>Teléfono</label>
-
-                    <input
-                        type="text"
-                        formControlName="telefono">
+                    </div>
 
                 </div>
 
-                <div class="form-group">
+                <div class="fila">
 
-                    <label>Correo</label>
+                    <div class="campo">
 
-                    <input
-                        type="email"
-                        formControlName="correo">
+                        <label>Teléfono</label>
+
+                        <input
+                            type="text"
+                            formControlName="telefono">
+
+                    </div>
+
+                    <div class="campo">
+
+                        <label>Correo</label>
+
+                        <input
+                            type="email"
+                            formControlName="correo">
+
+                    </div>
 
                 </div>
 
                 <div class="botones">
 
                     <button
-                        class="btn-guardar"
-                        type="submit">
+                        type="submit"
+                        class="guardar">
 
-                        {{ clienteSeleccionado ? 'Actualizar' : 'Guardar' }}
+                        {{ clienteSeleccionado ? 'Actualizar Cliente' : 'Guardar Cliente' }}
 
                     </button>
 
                     <button
                         type="button"
-                        class="btn-cancelar"
+                        class="cancelar"
                         (click)="limpiarFormulario()">
 
-                        Cancelar
+                        Limpiar
 
                     </button>
 
@@ -90,11 +137,9 @@
 
         </div>
 
-        <!-- ========================= -->
-        <!-- Tabla -->
-        <!-- ========================= -->
+        <div class="card">
 
-        <div class="table-card">
+            <h2>Listado de Clientes</h2>
 
             <table>
 
@@ -118,8 +163,7 @@
 
                 <tbody>
 
-                    <tr
-                        *ngFor="let cliente of clientes">
+                    <tr *ngFor="let cliente of clientes">
 
                         <td>{{cliente.nombre}}</td>
 
@@ -132,7 +176,7 @@
                         <td>
 
                             <button
-                                class="btn-editar"
+                                class="editar"
                                 (click)="editar(cliente)">
 
                                 Editar
@@ -140,7 +184,7 @@
                             </button>
 
                             <button
-                                class="btn-eliminar"
+                                class="eliminar"
                                 (click)="eliminar(cliente._id)">
 
                                 Eliminar
@@ -157,6 +201,6 @@
 
         </div>
 
-    </div>
+    </main>
 
 </div>

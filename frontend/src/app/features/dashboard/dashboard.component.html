@@ -1,6 +1,6 @@
 <div class="dashboard-page">
 
-    <!-- Sidebar -->
+    <!-- SIDEBAR -->
 
     <aside class="sidebar">
 
@@ -24,7 +24,7 @@
                 👤 Usuarios
             </button>
 
-            <button routerLink="/clientes">
+            <button class="activo" routerLink="/clientes">
                 👥 Clientes
             </button>
 
@@ -50,29 +50,154 @@
 
         </nav>
 
-        <button
-            class="logout"
-            (click)="logout()">
-
-            Cerrar sesión
-
-        </button>
-
     </aside>
 
-    <!-- Contenido -->
+    <!-- CONTENIDO -->
 
     <main class="contenido">
 
-        <div class="welcome-card">
+        <div class="card">
 
-            <h1>Bienvenido a Pitahaya CRM</h1>
+            <h1>Gestión de Clientes</h1>
 
-            <p>
+            <form
+                [formGroup]="clienteForm"
+                (ngSubmit)="guardarCliente()">
 
-                Seleccione un módulo desde el menú de la izquierda.
+                <div class="fila">
 
-            </p>
+                    <div class="campo">
+
+                        <label>Nombre</label>
+
+                        <input
+                            type="text"
+                            formControlName="nombre">
+
+                    </div>
+
+                    <div class="campo">
+
+                        <label>Empresa</label>
+
+                        <input
+                            type="text"
+                            formControlName="empresa">
+
+                    </div>
+
+                </div>
+
+                <div class="fila">
+
+                    <div class="campo">
+
+                        <label>Teléfono</label>
+
+                        <input
+                            type="text"
+                            formControlName="telefono">
+
+                    </div>
+
+                    <div class="campo">
+
+                        <label>Correo</label>
+
+                        <input
+                            type="email"
+                            formControlName="correo">
+
+                    </div>
+
+                </div>
+
+                <div class="botones">
+
+                    <button
+                        type="submit"
+                        class="guardar">
+
+                        {{ clienteSeleccionado ? 'Actualizar Cliente' : 'Guardar Cliente' }}
+
+                    </button>
+
+                    <button
+                        type="button"
+                        class="cancelar"
+                        (click)="limpiarFormulario()">
+
+                        Limpiar
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <div class="card">
+
+            <h2>Listado de Clientes</h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Nombre</th>
+
+                        <th>Empresa</th>
+
+                        <th>Teléfono</th>
+
+                        <th>Correo</th>
+
+                        <th>Acciones</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let cliente of clientes">
+
+                        <td>{{cliente.nombre}}</td>
+
+                        <td>{{cliente.empresa}}</td>
+
+                        <td>{{cliente.telefono}}</td>
+
+                        <td>{{cliente.correo}}</td>
+
+                        <td>
+
+                            <button
+                                class="editar"
+                                (click)="editar(cliente)">
+
+                                Editar
+
+                            </button>
+
+                            <button
+                                class="eliminar"
+                                (click)="eliminar(cliente._id)">
+
+                                Eliminar
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
 
         </div>
 
