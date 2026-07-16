@@ -6,9 +6,10 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
-
+//clientes
 import { ClienteService } from '../../core/services/cliente.service';
 import { Cliente } from '../../shared/interfaces/cliente.interface';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-clientes',

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
-
+//User
 import {
   FormBuilder,
   FormGroup,
@@ -14,6 +14,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { UsuarioService } from '../../core/services/usuario.service';
 
 import { Usuario } from '../../shared/interfaces/usuario.interface';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-usuario',
