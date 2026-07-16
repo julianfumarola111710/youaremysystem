@@ -1,0 +1,326 @@
+<div class="dashboard-page">
+
+  <aside class="sidebar">
+
+    <div class="logo-area">
+      <img src="logopitahaya.png" class="logo" alt="Logo Pitahaya CRM">
+      <h2>PITAHAYA CRM</h2>
+    </div>
+
+    <nav>
+      <button routerLink="/dashboard">🏠 Dashboard</button>
+      <button routerLink="/usuarios">👤 Usuarios</button>
+      <button routerLink="/clientes">👥 Clientes</button>
+      <button class="activo" routerLink="/productos">📦 Productos</button>
+      <button routerLink="/ventas">💰 Ventas</button>
+      <button routerLink="/actividades">📅 Actividades</button>
+      <button routerLink="/tickets">🎫 Tickets</button>
+      <button routerLink="/notificaciones">🔔 Notificaciones</button>
+    </nav>
+
+  </aside>
+
+  <main class="contenido">
+
+    <div class="encabezado">
+      <div>
+        <h1>Gestión de Productos</h1>
+        <p>Administre el catálogo de productos del CRM.</p>
+      </div>
+    </div>
+
+    <div
+      *ngIf="mensajeExito"
+      class="mensaje mensaje-exito">
+      {{ mensajeExito }}
+    </div>
+
+    <div
+      *ngIf="mensajeError"
+      class="mensaje mensaje-error">
+      {{ mensajeError }}
+    </div>
+
+    <section class="card">
+
+      <h2>
+        {{ productoSeleccionado ? 'Editar producto' : 'Registrar producto' }}
+      </h2>
+
+      <form
+        [formGroup]="productoForm"
+        (ngSubmit)="guardarProducto()">
+
+        <div class="fila">
+
+          <div class="campo">
+            <label for="nombre">Nombre *</label>
+            <input
+              id="nombre"
+              type="text"
+              formControlName="nombre"
+              placeholder="Ejemplo: Laptop empresarial">
+
+            <small
+              class="error-campo"
+              *ngIf="
+                productoForm.get('nombre')?.touched &&
+                productoForm.get('nombre')?.invalid
+              ">
+              El nombre debe tener al menos 2 caracteres.
+            </small>
+          </div>
+
+          <div class="campo">
+            <label for="codigo_sku">Código SKU *</label>
+            <input
+              id="codigo_sku"
+              type="text"
+              formControlName="codigo_sku"
+              placeholder="Ejemplo: ELE-1234"
+              maxlength="8"
+              (input)="convertirSkuMayuscula()">
+
+            <small
+              class="ayuda">
+              Formato requerido: tres letras, guion y cuatro números.
+            </small>
+
+            <small
+              class="error-campo"
+              *ngIf="
+                productoForm.get('codigo_sku')?.touched &&
+                productoForm.get('codigo_sku')?.invalid
+              ">
+              Introduzca un SKU con el formato AAA-0000.
+            </small>
+          </div>
+
+        </div>
+
+        <div class="fila">
+
+          <div class="campo">
+            <label for="categoria">Categoría *</label>
+
+            <select
+              id="categoria"
+              formControlName="categoria">
+
+              <option value="">Seleccione una categoría</option>
+
+              <option
+                *ngFor="let categoria of categorias"
+                [value]="categoria">
+                {{ categoria }}
+              </option>
+
+            </select>
+
+            <small
+              class="error-campo"
+              *ngIf="
+                productoForm.get('categoria')?.touched &&
+                productoForm.get('categoria')?.invalid
+              ">
+              Seleccione una categoría.
+            </small>
+          </div>
+
+          <div class="campo">
+            <label for="precio">Precio *</label>
+
+            <input
+              id="precio"
+              type="number"
+              formControlName="precio"
+              min="0"
+              step="0.01">
+
+            <small
+              class="error-campo"
+              *ngIf="
+                productoForm.get('precio')?.touched &&
+                productoForm.get('precio')?.invalid
+              ">
+              El precio no puede ser negativo.
+            </small>
+          </div>
+
+          <div class="campo">
+            <label for="stock">Stock *</label>
+
+            <input
+              id="stock"
+              type="number"
+              formControlName="stock"
+              min="0"
+              step="1">
+
+            <small
+              class="error-campo"
+              *ngIf="
+                productoForm.get('stock')?.touched &&
+                productoForm.get('stock')?.invalid
+              ">
+              El stock no puede ser negativo.
+            </small>
+          </div>
+
+        </div>
+
+        <div class="campo campo-completo">
+          <label for="descripcion">Descripción</label>
+
+          <textarea
+            id="descripcion"
+            formControlName="descripcion"
+            rows="3"
+            placeholder="Descripción general del producto">
+          </textarea>
+        </div>
+
+        <label class="estado">
+          <input
+            type="checkbox"
+            formControlName="activo">
+          Producto activo
+        </label>
+
+        <div class="botones">
+
+          <button
+            type="submit"
+            class="guardar">
+
+            {{
+              productoSeleccionado
+                ? 'Actualizar producto'
+                : 'Guardar producto'
+            }}
+
+          </button>
+
+          <button
+            type="button"
+            class="cancelar"
+            (click)="limpiarFormulario()">
+            Limpiar
+          </button>
+
+        </div>
+
+      </form>
+
+    </section>
+
+    <section class="card">
+
+      <div class="titulo-listado">
+
+        <div>
+          <h2>Listado de productos</h2>
+          <span class="contador">
+            {{ productosFiltrados.length }} registro(s)
+          </span>
+        </div>
+
+        <input
+          class="buscador"
+          type="search"
+          [(ngModel)]="terminoBusqueda"
+          [ngModelOptions]="{ standalone: true }"
+          placeholder="Buscar por nombre, SKU o categoría">
+
+      </div>
+
+      <div *ngIf="cargando" class="estado-tabla">
+        Cargando productos...
+      </div>
+
+      <div
+        *ngIf="!cargando && productosFiltrados.length === 0"
+        class="estado-tabla">
+        No se encontraron productos.
+      </div>
+
+      <div
+        class="tabla-contenedor"
+        *ngIf="!cargando && productosFiltrados.length > 0">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>SKU</th>
+              <th>Categoría</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr *ngFor="let producto of productosFiltrados">
+
+              <td>
+                <strong>{{ producto.nombre }}</strong>
+                <span class="descripcion">
+                  {{ producto.descripcion || 'Sin descripción' }}
+                </span>
+              </td>
+
+              <td>{{ producto.codigo_sku }}</td>
+
+              <td>{{ producto.categoria }}</td>
+
+              <td>
+                {{ producto.precio | currency:'USD':'symbol':'1.2-2' }}
+              </td>
+
+              <td>{{ producto.stock }}</td>
+
+              <td>
+                <span
+                  class="etiqueta"
+                  [class.inactivo]="!producto.activo">
+
+                  {{ producto.activo ? 'Activo' : 'Inactivo' }}
+
+                </span>
+              </td>
+
+              <td class="acciones">
+
+                <button
+                  type="button"
+                  class="editar"
+                  (click)="editar(producto)">
+                  Editar
+                </button>
+
+                <button
+                  type="button"
+                  class="eliminar"
+                  (click)="eliminar(producto)">
+                  Eliminar
+                </button>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
