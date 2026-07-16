@@ -20,7 +20,8 @@ import { Usuario } from '../../shared/interfaces/usuario.interface';
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterLink
   ],
   templateUrl: './usuario.component.html',
   styleUrl: './usuario.component.css'

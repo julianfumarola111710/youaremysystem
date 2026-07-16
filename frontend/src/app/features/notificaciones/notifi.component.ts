@@ -19,7 +19,8 @@ import { Usuario } from '../../shared/interfaces/usuario.interface';
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterLink
   ],
   templateUrl: './notifi.component.html',
   styleUrl: './notifi.component.css'

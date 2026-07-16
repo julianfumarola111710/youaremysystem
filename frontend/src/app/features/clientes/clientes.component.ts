@@ -15,7 +15,8 @@ import { Cliente } from '../../shared/interfaces/cliente.interface';
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterLink
   ],
   templateUrl: './clientes.component.html',
   styleUrl: './clientes.component.css'
