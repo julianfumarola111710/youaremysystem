@@ -1,33 +1,58 @@
 const Producto = require('../models/productos');
 
-// ─────────────────────────────────────────────
-// POST  /api/producto  →  Crear nuevo producto
-// ─────────────────────────────────────────────
+// Crear un nuevo producto
 const crearProducto = async (req, res) => {
   try {
-    const { nombre, codigo_sku, categoria, precio, stock, descripcion } = req.body;
-
-    const nuevoProducto = new Producto({
+    const {
       nombre,
       codigo_sku,
       categoria,
       precio,
       stock,
-      descripcion
+      descripcion,
+      activo
+    } = req.body;
+
+    const skuNormalizado = codigo_sku
+      ? codigo_sku.trim().toUpperCase()
+      : '';
+
+    // Comprobar si el SKU ya está registrado
+    const productoExistente = await Producto.findOne({
+      codigo_sku: skuNormalizado
     });
 
-    const productoGuardado = await nuevoProducto.save();
+    if (productoExistente) {
+      return res.status(400).json({
+        ok: false,
+        mensaje: 'El código SKU ya existe en la base de datos'
+      });
+    }
 
-    res.status(201).json({
+    const nuevoProducto = new Producto({
+      nombre,
+      codigo_sku: skuNormalizado,
+      categoria,
+      precio,
+      stock,
+      descripcion,
+      activo
+    });
+
+    const productoGuardado =
+      await nuevoProducto.save();
+
+    return res.status(201).json({
       ok: true,
       mensaje: 'Producto creado exitosamente',
       producto: productoGuardado
     });
 
   } catch (error) {
-    // Mongoose lanza ValidationError cuando falla Regex o Enum
     if (error.name === 'ValidationError') {
-      const mensajes = Object.values(error.errors).map(e => e.message);
+      const mensajes = Object.values(error.errors)
+        .map(item => item.message);
+
       return res.status(400).json({
         ok: false,
         mensaje: 'Error de validación',
@@ -35,7 +60,6 @@ const crearProducto = async (req, res) => {
       });
     }
 
-    // Error de clave duplicada (SKU repetido)
     if (error.code === 11000) {
       return res.status(400).json({
         ok: false,
@@ -44,42 +68,43 @@ const crearProducto = async (req, res) => {
     }
 
     console.error(error);
-    res.status(500).json({
+
+    return res.status(500).json({
       ok: false,
-      mensaje: 'Error interno del servidor',
-      error: error.message
+      mensaje: 'Error interno del servidor'
     });
   }
 };
 
-// ─────────────────────────────────────────────
-// GET  /api/producto  →  Obtener todos los productos
-// ─────────────────────────────────────────────
+// Obtener todos los productos
 const getProductos = async (req, res) => {
   try {
-    const productos = await Producto.find();
+    const productos = await Producto
+      .find()
+      .sort({ createdAt: -1 });
 
-    res.status(200).json({
+    return res.status(200).json({
       ok: true,
       total: productos.length,
       productos
     });
 
   } catch (error) {
-    res.status(500).json({
+    console.error(error);
+
+    return res.status(500).json({
       ok: false,
-      mensaje: 'Error al obtener productos',
-      error: error.message
+      mensaje: 'Error al obtener productos'
     });
   }
 };
 
-// ─────────────────────────────────────────────
-// GET  /api/producto/:id  →  Obtener producto por ID
-// ─────────────────────────────────────────────
+// Obtener un producto por ID
 const getProductoById = async (req, res) => {
   try {
-    const producto = await Producto.findById(req.params.id);
+    const producto = await Producto.findById(
+      req.params.id
+    );
 
     if (!producto) {
       return res.status(404).json({
@@ -88,33 +113,71 @@ const getProductoById = async (req, res) => {
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       ok: true,
       producto
     });
 
   } catch (error) {
-    res.status(500).json({
+    console.error(error);
+
+    return res.status(500).json({
       ok: false,
-      mensaje: 'Error al obtener el producto',
-      error: error.message
+      mensaje: 'Error al obtener el producto'
     });
   }
 };
 
-// ─────────────────────────────────────────────
-// PUT  /api/producto/:id  →  Actualizar producto
-// ─────────────────────────────────────────────
+// Actualizar un producto
 const actualizarProducto = async (req, res) => {
   try {
-    const { nombre, codigo_sku, categoria, precio, stock, descripcion, activo } = req.body;
+    const {
+      nombre,
+      codigo_sku,
+      categoria,
+      precio,
+      stock,
+      descripcion,
+      activo
+    } = req.body;
 
-    // runValidators: true → aplica las reglas de Regex y Enum también en el UPDATE
-    const productoActualizado = await Producto.findByIdAndUpdate(
-      req.params.id,
-      { nombre, codigo_sku, categoria, precio, stock, descripcion, activo },
-      { new: true, runValidators: true }
-    );
+    const skuNormalizado = codigo_sku
+      ? codigo_sku.trim().toUpperCase()
+      : '';
+
+    // Buscar otro producto que ya tenga ese SKU
+    const productoConMismoSku =
+      await Producto.findOne({
+        codigo_sku: skuNormalizado,
+        _id: {
+          $ne: req.params.id
+        }
+      });
+
+    if (productoConMismoSku) {
+      return res.status(400).json({
+        ok: false,
+        mensaje: 'El código SKU ya pertenece a otro producto'
+      });
+    }
+
+    const productoActualizado =
+      await Producto.findByIdAndUpdate(
+        req.params.id,
+        {
+          nombre,
+          codigo_sku: skuNormalizado,
+          categoria,
+          precio,
+          stock,
+          descripcion,
+          activo
+        },
+        {
+          new: true,
+          runValidators: true
+        }
+      );
 
     if (!productoActualizado) {
       return res.status(404).json({
@@ -123,7 +186,7 @@ const actualizarProducto = async (req, res) => {
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       ok: true,
       mensaje: 'Producto actualizado correctamente',
       producto: productoActualizado
@@ -131,7 +194,9 @@ const actualizarProducto = async (req, res) => {
 
   } catch (error) {
     if (error.name === 'ValidationError') {
-      const mensajes = Object.values(error.errors).map(e => e.message);
+      const mensajes = Object.values(error.errors)
+        .map(item => item.message);
+
       return res.status(400).json({
         ok: false,
         mensaje: 'Error de validación al actualizar',
@@ -139,20 +204,27 @@ const actualizarProducto = async (req, res) => {
       });
     }
 
-    res.status(500).json({
+    if (error.code === 11000) {
+      return res.status(400).json({
+        ok: false,
+        mensaje: 'El código SKU ya pertenece a otro producto'
+      });
+    }
+
+    console.error(error);
+
+    return res.status(500).json({
       ok: false,
-      mensaje: 'Error al actualizar producto',
-      error: error.message
+      mensaje: 'Error al actualizar producto'
     });
   }
 };
 
-// ─────────────────────────────────────────────
-// DELETE  /api/producto/:id  →  Eliminar producto
-// ─────────────────────────────────────────────
+// Eliminar un producto
 const eliminarProducto = async (req, res) => {
   try {
-    const productoEliminado = await Producto.findByIdAndDelete(req.params.id);
+    const productoEliminado =
+      await Producto.findByIdAndDelete(req.params.id);
 
     if (!productoEliminado) {
       return res.status(404).json({
@@ -161,17 +233,18 @@ const eliminarProducto = async (req, res) => {
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       ok: true,
       mensaje: 'Producto eliminado correctamente',
       producto: productoEliminado
     });
 
   } catch (error) {
-    res.status(500).json({
+    console.error(error);
+
+    return res.status(500).json({
       ok: false,
-      mensaje: 'Error al eliminar producto',
-      error: error.message
+      mensaje: 'Error al eliminar producto'
     });
   }
 };
