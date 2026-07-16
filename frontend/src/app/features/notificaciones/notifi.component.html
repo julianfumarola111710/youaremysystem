@@ -86,11 +86,16 @@
 
                     <div class="campo">
 
-                        <label>Usuario (ObjectId)</label>
+    <label>Usuario (ObjectId)</label>
 
-                        <select formControlName="usuario">
+    <select formControlName="usuario">
+        <option value="">-- Seleccione usuario --</option>
+        <option *ngFor="let u of usuarios" [value]="u._id">
+            {{ u.nombre }}
+        </option>
+    </select>
 
-                    </div>
+</div>
 
                     <div class="campo">
 
