@@ -37,7 +37,7 @@ const notifiSchema = new mongoose.Schema({
 
     timestamps: false,
 
-    collection: 'Notifi'
+    collection: 'Notificaciones'
 
 });
 
