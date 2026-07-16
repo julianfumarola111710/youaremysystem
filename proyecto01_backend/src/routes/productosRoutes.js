@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const verificarToken = require('../middleware/authMiddleware');
+
 const {
   crearProducto,
   getProductos,
@@ -9,19 +11,53 @@ const {
   eliminarProducto
 } = require('../controllers/productoController');
 
-// POST   /api/producto          → Crear producto
-router.post('/', crearProducto);
+const verificarAdmin = (req, res, next) => {
+  if (req.usuario?.rol !== 'admin') {
+    return res.status(403).json({
+      ok: false,
+      mensaje: 'No tiene permisos para realizar esta acción'
+    });
+  }
 
-// GET    /api/producto          → Obtener todos
-router.get('/', getProductos);
+  next();
+};
 
-// GET    /api/producto/:id      → Obtener uno por ID
-router.get('/:id', getProductoById);
+// Crear producto: solo administrador
+router.post(
+  '/',
+  verificarToken,
+  verificarAdmin,
+  crearProducto
+);
 
-// PUT    /api/producto/:id      → Actualizar
-router.put('/:id', actualizarProducto);
+// Consultar productos: cualquier usuario autenticado
+router.get(
+  '/',
+  verificarToken,
+  getProductos
+);
 
-// DELETE /api/producto/:id      → Eliminar
-router.delete('/:id', eliminarProducto);
+// Consultar un producto: cualquier usuario autenticado
+router.get(
+  '/:id',
+  verificarToken,
+  getProductoById
+);
+
+// Actualizar producto: solo administrador
+router.put(
+  '/:id',
+  verificarToken,
+  verificarAdmin,
+  actualizarProducto
+);
+
+// Eliminar producto: solo administrador
+router.delete(
+  '/:id',
+  verificarToken,
+  verificarAdmin,
+  eliminarProducto
+);
 
 module.exports = router;
