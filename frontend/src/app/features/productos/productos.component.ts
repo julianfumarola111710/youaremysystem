@@ -9,6 +9,7 @@ import {
 import { RouterLink } from '@angular/router';
 
 import { ProductoService } from '../../core/services/producto.service';
+import { TokenService } from '../../core/services/token.service';
 import { Producto } from '../../shared/interfaces/producto.interface';
 
 @Component({
@@ -33,6 +34,7 @@ export class ProductosComponent implements OnInit {
   mensajeExito = '';
   mensajeError = '';
   cargando = false;
+  esAdmin = false;
 
   categorias = [
     'Electronica',
@@ -44,7 +46,8 @@ export class ProductosComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private productoService: ProductoService
+    private productoService: ProductoService,
+    private tokenService: TokenService
   ) {
     this.productoForm = this.fb.group({
       nombre: ['', [
@@ -70,6 +73,10 @@ export class ProductosComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const usuario = this.tokenService.getUser();
+
+    this.esAdmin = usuario?.rol === 'admin';
+
     this.cargarProductos();
   }
 
@@ -91,7 +98,6 @@ export class ProductosComponent implements OnInit {
 
   cargarProductos(): void {
     this.cargando = true;
-    this.limpiarMensajes();
 
     this.productoService.getProductos().subscribe({
       next: response => {
@@ -100,8 +106,10 @@ export class ProductosComponent implements OnInit {
       },
       error: error => {
         this.mostrarError(
-          error.error?.mensaje || 'No se pudieron cargar los productos'
+          error.error?.mensaje ||
+          'No se pudieron cargar los productos'
         );
+
         this.cargando = false;
       }
     });
@@ -109,6 +117,13 @@ export class ProductosComponent implements OnInit {
 
   guardarProducto(): void {
     this.limpiarMensajes();
+
+    if (!this.esAdmin) {
+      this.mostrarError(
+        'No tiene permisos para administrar productos'
+      );
+      return;
+    }
 
     if (this.productoForm.invalid) {
       this.productoForm.markAllAsTouched();
@@ -118,7 +133,8 @@ export class ProductosComponent implements OnInit {
 
     const producto: Producto = {
       ...this.productoForm.value,
-      codigo_sku: this.productoForm.value.codigo_sku.toUpperCase(),
+      codigo_sku:
+        this.productoForm.value.codigo_sku.toUpperCase(),
       precio: Number(this.productoForm.value.precio),
       stock: Number(this.productoForm.value.stock)
     };
@@ -134,17 +150,23 @@ export class ProductosComponent implements OnInit {
   }
 
   crearProducto(producto: Producto): void {
-    this.productoService.crearProducto(producto).subscribe({
-      next: response => {
-        this.mensajeExito =
-          response.mensaje || 'Producto creado correctamente';
-        this.cargarProductos();
-        this.limpiarFormulario(false);
-      },
-      error: error => {
-        this.procesarError(error);
-      }
-    });
+    this.productoService
+      .crearProducto(producto)
+      .subscribe({
+        next: response => {
+          this.mensajeExito =
+            response.mensaje ||
+            'Producto creado correctamente';
+
+          this.mensajeError = '';
+
+          this.limpiarFormulario(false);
+          this.cargarProductos();
+        },
+        error: error => {
+          this.procesarError(error);
+        }
+      });
   }
 
   actualizarProducto(
@@ -156,9 +178,13 @@ export class ProductosComponent implements OnInit {
       .subscribe({
         next: response => {
           this.mensajeExito =
-            response.mensaje || 'Producto actualizado correctamente';
-          this.cargarProductos();
+            response.mensaje ||
+            'Producto actualizado correctamente';
+
+          this.mensajeError = '';
+
           this.limpiarFormulario(false);
+          this.cargarProductos();
         },
         error: error => {
           this.procesarError(error);
@@ -167,6 +193,10 @@ export class ProductosComponent implements OnInit {
   }
 
   editar(producto: Producto): void {
+    if (!this.esAdmin) {
+      return;
+    }
+
     this.productoSeleccionado = producto;
     this.limpiarMensajes();
 
@@ -187,7 +217,7 @@ export class ProductosComponent implements OnInit {
   }
 
   eliminar(producto: Producto): void {
-    if (!producto._id) {
+    if (!this.esAdmin || !producto._id) {
       return;
     }
 
@@ -206,7 +236,11 @@ export class ProductosComponent implements OnInit {
       .subscribe({
         next: response => {
           this.mensajeExito =
-            response.mensaje || 'Producto eliminado correctamente';
+            response.mensaje ||
+            'Producto eliminado correctamente';
+
+          this.mensajeError = '';
+
           this.cargarProductos();
         },
         error: error => {
@@ -236,27 +270,33 @@ export class ProductosComponent implements OnInit {
   }
 
   convertirSkuMayuscula(): void {
-    const sku = this.productoForm.get('codigo_sku')?.value;
+    const sku =
+      this.productoForm.get('codigo_sku')?.value;
 
     if (sku) {
       this.productoForm
         .get('codigo_sku')
-        ?.setValue(sku.toUpperCase(), {
-          emitEvent: false
-        });
+        ?.setValue(
+          sku.toUpperCase(),
+          { emitEvent: false }
+        );
     }
   }
 
   private procesarError(error: any): void {
     const errores = error.error?.errores;
 
-    if (Array.isArray(errores) && errores.length > 0) {
+    if (
+      Array.isArray(errores) &&
+      errores.length > 0
+    ) {
       this.mostrarError(errores.join(' '));
       return;
     }
 
     this.mostrarError(
-      error.error?.mensaje || 'Ocurrió un error con el producto'
+      error.error?.mensaje ||
+      'Ocurrió un error con el producto'
     );
   }
 
