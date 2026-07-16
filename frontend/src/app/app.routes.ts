@@ -3,6 +3,8 @@ import { LoginComponent } from './features/auth/login/login.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { ClientesComponent } from './features/clientes/clientes.component';
 import { authGuard } from './core/guards/auth.guard';
+import { NotifiComponent } from './features/notificaciones/notifi.component';
+import { UsuarioComponent } from './features/usuarios/usuario.component';
 
 export const routes: Routes = [
   {
@@ -22,6 +24,16 @@ export const routes: Routes = [
   {
   path: 'clientes',
   component: ClientesComponent,
+  canActivate: [authGuard]
+},
+{
+  path: 'notificaciones',
+  component: NotifiComponent,
+  canActivate: [authGuard]
+},
+{
+  path: 'usuarios',
+  component: UsuarioComponent,
   canActivate: [authGuard]
 }
 ];
