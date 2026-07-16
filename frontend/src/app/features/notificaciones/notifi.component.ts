@@ -10,7 +10,9 @@ import {
 } from '@angular/forms';
 
 import { NotifiService } from '../../core/services/notifi.service';
+import { UsuarioService } from '../../core/services/usuario.service';
 import { Notifi } from '../../shared/interfaces/notifi.interface';
+import { Usuario } from '../../shared/interfaces/usuario.interface';
 
 @Component({
   selector: 'app-notifi',
@@ -27,6 +29,8 @@ export class NotifiComponent implements OnInit {
 
   notifis: Notifi[] = [];
 
+  usuarios: Usuario[] = [];
+
   notifiSeleccionada: Notifi | null = null;
 
   notifiForm: FormGroup;
@@ -35,7 +39,9 @@ export class NotifiComponent implements OnInit {
 
     private fb: FormBuilder,
 
-    private notifiService: NotifiService
+    private notifiService: NotifiService,
+
+    private usuarioService: UsuarioService
 
   ) {
 
@@ -55,6 +61,8 @@ export class NotifiComponent implements OnInit {
 
     this.cargarNotifis();
 
+    this.cargarUsuarios();
+
   }
 
   cargarNotifis(): void {
@@ -64,6 +72,26 @@ export class NotifiComponent implements OnInit {
       next: (data: Notifi[]) => {
 
         this.notifis = data;
+
+      },
+
+      error: (err: Error) => {
+
+        console.error(err);
+
+      }
+
+    });
+
+  }
+
+  cargarUsuarios(): void {
+
+    this.usuarioService.getUsers().subscribe({
+
+      next: (data: Usuario[]) => {
+
+        this.usuarios = data;
 
       },
 

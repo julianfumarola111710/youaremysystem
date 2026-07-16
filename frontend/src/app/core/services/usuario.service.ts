@@ -32,7 +32,7 @@ export class UsuarioService {
 
       .pipe(
 
-        map(response => response.usuarios)
+        map((response: { ok: boolean; usuarios: Usuario[] }) => response.usuarios)
 
       );
 
@@ -54,7 +54,7 @@ export class UsuarioService {
 
       .pipe(
 
-        map(response => response.data)
+        map((response: { success: boolean; data: Usuario }) => response.data)
 
       );
 
