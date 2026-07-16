@@ -1,0 +1,272 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators
+} from '@angular/forms';
+import { RouterLink } from '@angular/router';
+
+import { ProductoService } from '../../core/services/producto.service';
+import { Producto } from '../../shared/interfaces/producto.interface';
+
+@Component({
+  selector: 'app-productos',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterLink
+  ],
+  templateUrl: './productos.component.html',
+  styleUrl: './productos.component.css'
+})
+export class ProductosComponent implements OnInit {
+
+  productos: Producto[] = [];
+  productoSeleccionado: Producto | null = null;
+  productoForm: FormGroup;
+
+  terminoBusqueda = '';
+  mensajeExito = '';
+  mensajeError = '';
+  cargando = false;
+
+  categorias = [
+    'Electronica',
+    'Hogar',
+    'Oficina',
+    'Ropa',
+    'Alimentos'
+  ];
+
+  constructor(
+    private fb: FormBuilder,
+    private productoService: ProductoService
+  ) {
+    this.productoForm = this.fb.group({
+      nombre: ['', [
+        Validators.required,
+        Validators.minLength(2)
+      ]],
+      codigo_sku: ['', [
+        Validators.required,
+        Validators.pattern(/^[A-Z]{3}-\d{4}$/)
+      ]],
+      categoria: ['', Validators.required],
+      precio: [0, [
+        Validators.required,
+        Validators.min(0)
+      ]],
+      stock: [0, [
+        Validators.required,
+        Validators.min(0)
+      ]],
+      descripcion: [''],
+      activo: [true]
+    });
+  }
+
+  ngOnInit(): void {
+    this.cargarProductos();
+  }
+
+  get productosFiltrados(): Producto[] {
+    const termino = this.terminoBusqueda
+      .trim()
+      .toLowerCase();
+
+    if (!termino) {
+      return this.productos;
+    }
+
+    return this.productos.filter(producto =>
+      producto.nombre.toLowerCase().includes(termino) ||
+      producto.codigo_sku.toLowerCase().includes(termino) ||
+      producto.categoria.toLowerCase().includes(termino)
+    );
+  }
+
+  cargarProductos(): void {
+    this.cargando = true;
+    this.limpiarMensajes();
+
+    this.productoService.getProductos().subscribe({
+      next: response => {
+        this.productos = response.productos;
+        this.cargando = false;
+      },
+      error: error => {
+        this.mostrarError(
+          error.error?.mensaje || 'No se pudieron cargar los productos'
+        );
+        this.cargando = false;
+      }
+    });
+  }
+
+  guardarProducto(): void {
+    this.limpiarMensajes();
+
+    if (this.productoForm.invalid) {
+      this.productoForm.markAllAsTouched();
+      this.mostrarError('Revise los campos obligatorios');
+      return;
+    }
+
+    const producto: Producto = {
+      ...this.productoForm.value,
+      codigo_sku: this.productoForm.value.codigo_sku.toUpperCase(),
+      precio: Number(this.productoForm.value.precio),
+      stock: Number(this.productoForm.value.stock)
+    };
+
+    if (this.productoSeleccionado?._id) {
+      this.actualizarProducto(
+        this.productoSeleccionado._id,
+        producto
+      );
+    } else {
+      this.crearProducto(producto);
+    }
+  }
+
+  crearProducto(producto: Producto): void {
+    this.productoService.crearProducto(producto).subscribe({
+      next: response => {
+        this.mensajeExito =
+          response.mensaje || 'Producto creado correctamente';
+        this.cargarProductos();
+        this.limpiarFormulario(false);
+      },
+      error: error => {
+        this.procesarError(error);
+      }
+    });
+  }
+
+  actualizarProducto(
+    id: string,
+    producto: Producto
+  ): void {
+    this.productoService
+      .actualizarProducto(id, producto)
+      .subscribe({
+        next: response => {
+          this.mensajeExito =
+            response.mensaje || 'Producto actualizado correctamente';
+          this.cargarProductos();
+          this.limpiarFormulario(false);
+        },
+        error: error => {
+          this.procesarError(error);
+        }
+      });
+  }
+
+  editar(producto: Producto): void {
+    this.productoSeleccionado = producto;
+    this.limpiarMensajes();
+
+    this.productoForm.patchValue({
+      nombre: producto.nombre,
+      codigo_sku: producto.codigo_sku,
+      categoria: producto.categoria,
+      precio: producto.precio,
+      stock: producto.stock,
+      descripcion: producto.descripcion,
+      activo: producto.activo
+    });
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }
+
+  eliminar(producto: Producto): void {
+    if (!producto._id) {
+      return;
+    }
+
+    const confirmar = confirm(
+      `¿Desea eliminar el producto "${producto.nombre}"?`
+    );
+
+    if (!confirmar) {
+      return;
+    }
+
+    this.limpiarMensajes();
+
+    this.productoService
+      .eliminarProducto(producto._id)
+      .subscribe({
+        next: response => {
+          this.mensajeExito =
+            response.mensaje || 'Producto eliminado correctamente';
+          this.cargarProductos();
+        },
+        error: error => {
+          this.procesarError(error);
+        }
+      });
+  }
+
+  limpiarFormulario(
+    limpiarMensajes: boolean = true
+  ): void {
+    this.productoSeleccionado = null;
+
+    this.productoForm.reset({
+      nombre: '',
+      codigo_sku: '',
+      categoria: '',
+      precio: 0,
+      stock: 0,
+      descripcion: '',
+      activo: true
+    });
+
+    if (limpiarMensajes) {
+      this.limpiarMensajes();
+    }
+  }
+
+  convertirSkuMayuscula(): void {
+    const sku = this.productoForm.get('codigo_sku')?.value;
+
+    if (sku) {
+      this.productoForm
+        .get('codigo_sku')
+        ?.setValue(sku.toUpperCase(), {
+          emitEvent: false
+        });
+    }
+  }
+
+  private procesarError(error: any): void {
+    const errores = error.error?.errores;
+
+    if (Array.isArray(errores) && errores.length > 0) {
+      this.mostrarError(errores.join(' '));
+      return;
+    }
+
+    this.mostrarError(
+      error.error?.mensaje || 'Ocurrió un error con el producto'
+    );
+  }
+
+  private mostrarError(mensaje: string): void {
+    this.mensajeError = mensaje;
+    this.mensajeExito = '';
+  }
+
+  private limpiarMensajes(): void {
+    this.mensajeExito = '';
+    this.mensajeError = '';
+  }
+}
