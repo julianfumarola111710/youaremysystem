@@ -96,9 +96,131 @@ const getUserById = async (req, res) => {
   }
 
 };
+// Actualizar usuario
+const actualizarUsuario = async (req, res) => {
 
+  try {
+
+    const { nombre, email, password, rol, activo } = req.body;
+
+    const datosActualizar = {
+      nombre,
+      email,
+      rol,
+      activo
+    };
+
+    // Si enviaron contraseña nueva, volver a encriptarla
+    if (password && password.trim() !== '') {
+
+      const salt = bcrypt.genSaltSync(10);
+
+      datosActualizar.password = bcrypt.hashSync(password, salt);
+
+    }
+
+    const usuario = await Usuario.findByIdAndUpdate(
+
+      req.params.id,
+
+      datosActualizar,
+
+      {
+        new: true,
+        runValidators: true
+      }
+
+    );
+
+    if (!usuario) {
+
+      return res.status(404).json({
+
+        ok: false,
+
+        mensaje: 'Usuario no encontrado'
+
+      });
+
+    }
+
+    res.json({
+
+      ok: true,
+
+      usuario
+
+    });
+
+  }
+
+  catch (error) {
+
+    res.status(500).json({
+
+      ok: false,
+
+      mensaje: 'Error actualizando usuario',
+
+      error: error.message
+
+    });
+
+  }
+
+};
+// Eliminar usuario
+const eliminarUsuario = async (req, res) => {
+
+  try {
+
+    const usuario = await Usuario.findByIdAndDelete(
+
+      req.params.id
+
+    );
+
+    if (!usuario) {
+
+      return res.status(404).json({
+
+        ok: false,
+
+        mensaje: 'Usuario no encontrado'
+
+      });
+
+    }
+
+    res.json({
+
+      ok: true,
+
+      mensaje: 'Usuario eliminado'
+
+    });
+
+  }
+
+  catch (error) {
+
+    res.status(500).json({
+
+      ok: false,
+
+      mensaje: 'Error eliminando usuario',
+
+      error: error.message
+
+    });
+
+  }
+
+};
 module.exports = {
   crearUsuario,
   getUsers,
-  getUserById
+  getUserById,
+  actualizarUsuario,
+  eliminarUsuario
 };
