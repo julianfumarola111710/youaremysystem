@@ -16,8 +16,12 @@
 
         <nav>
 
-            <button routerLink="/dashboard">
+            <button
+                class="activo"
+                routerLink="/dashboard">
+
                 🏠 Dashboard
+
             </button>
 
             <button routerLink="/usuarios">
@@ -70,9 +74,135 @@
 
             <p>
 
-                Seleccione un módulo desde el menú de la izquierda.
+                Resumen general del negocio en tiempo real.
 
             </p>
+
+        </div>
+
+        <div *ngIf="cargando" class="card">
+
+            <p>Cargando datos del dashboard...</p>
+
+        </div>
+
+        <div *ngIf="!cargando">
+
+            <!-- TARJETAS DE ESTADÍSTICAS -->
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+
+                    <div class="stat-icono">💰</div>
+
+                    <div class="stat-info">
+
+                        <span class="stat-numero">{{ totalVentasMonto | currency }}</span>
+
+                        <span class="stat-label">Ventas totales</span>
+
+                    </div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div class="stat-icono">🧾</div>
+
+                    <div class="stat-info">
+
+                        <span class="stat-numero">{{ totalVentasCantidad }}</span>
+
+                        <span class="stat-label">Transacciones</span>
+
+                    </div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div class="stat-icono">👥</div>
+
+                    <div class="stat-info">
+
+                        <span class="stat-numero">{{ totalClientes }}</span>
+
+                        <span class="stat-label">Clientes registrados</span>
+
+                    </div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div class="stat-icono">🎫</div>
+
+                    <div class="stat-info">
+
+                        <span class="stat-numero">{{ ticketsAbiertos }}</span>
+
+                        <span class="stat-label">Tickets abiertos</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RANKING DE CLIENTES -->
+
+            <div class="card">
+
+                <h2>Clientes con mayores ventas</h2>
+
+                <div *ngIf="clientesRanking.length === 0" class="sin-datos">
+
+                    Aún no hay ventas registradas.
+
+                </div>
+
+                <div
+                    class="ranking-item"
+                    *ngFor="let c of clientesRanking; let i = index">
+
+                    <div class="ranking-posicion">
+
+                        #{{ i + 1 }}
+
+                    </div>
+
+                    <div class="ranking-detalle">
+
+                        <div class="ranking-nombre">
+
+                            <span>{{ c.nombre }}</span>
+
+                            <span class="ranking-monto">{{ c.totalVentas | currency }}</span>
+
+                        </div>
+
+                        <div class="ranking-barra-fondo">
+
+                            <div
+                                class="ranking-barra"
+                                [style.width.%]="c.porcentaje">
+
+                            </div>
+
+                        </div>
+
+                        <span class="ranking-cantidad">
+
+                            {{ c.cantidadVentas }} {{ c.cantidadVentas === 1 ? 'venta' : 'ventas' }}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
 
         </div>
 
