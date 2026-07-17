@@ -21,6 +21,8 @@ import { Cliente } from '../../shared/interfaces/cliente.interface';
 import { Usuario } from '../../shared/interfaces/usuario.interface';
 import { Producto, ProductosResponse } from '../../shared/interfaces/producto.interface';
 
+const ITBMS_RATE = 0.07;
+
 @Component({
   selector: 'app-venta',
   standalone: true,
@@ -47,6 +49,12 @@ export class VentaComponent implements OnInit {
 
   ventaForm: FormGroup;
 
+  subtotal = 0;
+
+  itbms = 0;
+
+  total = 0;
+
   constructor(
 
     private fb: FormBuilder,
@@ -71,7 +79,7 @@ export class VentaComponent implements OnInit {
 
       fecha: ['', Validators.required],
 
-      total: ['', [Validators.required, Validators.min(0)]]
+      cantidad: [1, [Validators.required, Validators.min(1)]]
 
     });
 
@@ -86,6 +94,18 @@ export class VentaComponent implements OnInit {
     this.cargarUsuarios();
 
     this.cargarProductos();
+
+    this.ventaForm.get('producto')?.valueChanges.subscribe(() => {
+
+      this.calcularTotales();
+
+    });
+
+    this.ventaForm.get('cantidad')?.valueChanges.subscribe(() => {
+
+      this.calcularTotales();
+
+    });
 
   }
 
@@ -167,7 +187,25 @@ export class VentaComponent implements OnInit {
 
     });
 
-}
+  }
+
+  calcularTotales(): void {
+
+    const productoId = this.ventaForm.get('producto')?.value;
+
+    const cantidad = Number(this.ventaForm.get('cantidad')?.value) || 0;
+
+    const producto = this.productos.find(p => p._id === productoId);
+
+    const precioUnitario = producto ? producto.precio : 0;
+
+    this.subtotal = precioUnitario * cantidad;
+
+    this.itbms = this.subtotal * ITBMS_RATE;
+
+    this.total = this.subtotal + this.itbms;
+
+  }
 
   guardarVenta(): void {
 
@@ -278,9 +316,11 @@ export class VentaComponent implements OnInit {
 
       fecha: venta.fecha.substring(0, 10),
 
-      total: venta.total
+      cantidad: venta.cantidad
 
     });
+
+    this.calcularTotales();
 
   }
 
@@ -324,7 +364,13 @@ export class VentaComponent implements OnInit {
 
     this.ventaSeleccionada = null;
 
-    this.ventaForm.reset();
+    this.ventaForm.reset({ cantidad: 1 });
+
+    this.subtotal = 0;
+
+    this.itbms = 0;
+
+    this.total = 0;
 
   }
 

@@ -6,9 +6,17 @@ export interface Venta {
 
     usuario: string | { _id: string; nombre: string };
 
-    producto: string | { _id: string; nombre: string };
+    producto: string | { _id: string; nombre: string; precio: number };
 
     fecha: string;
+
+    cantidad: number;
+
+    precioUnitario: number;
+
+    subtotal: number;
+
+    itbms: number;
 
     total: number;
 

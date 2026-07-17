@@ -112,6 +112,12 @@ nav button:hover{
     background:white;
 }
 
+.campo input:disabled{
+    background:#eef1f5;
+    color:#555;
+    font-weight:bold;
+}
+
 .botones{
     margin-top:20px;
     display:flex;

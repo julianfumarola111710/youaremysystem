@@ -107,7 +107,7 @@
                         <select formControlName="producto">
                             <option value="">-- Seleccione producto --</option>
                             <option *ngFor="let p of productos" [value]="p._id">
-                                {{ p.nombre }}
+                                {{ p.nombre }} ({{ p.precio | currency }})
                             </option>
                         </select>
 
@@ -129,12 +129,49 @@
 
                     <div class="campo">
 
-                        <label>Total</label>
+                        <label>Cantidad</label>
 
                         <input
                             type="number"
-                            step="0.01"
-                            formControlName="total">
+                            min="1"
+                            formControlName="cantidad">
+
+                    </div>
+
+                    <div class="campo">
+
+                        <label>Subtotal</label>
+
+                        <input
+                            type="text"
+                            [value]="subtotal | currency"
+                            disabled>
+
+                    </div>
+
+                </div>
+
+                <div class="fila">
+
+                    <div class="campo">
+
+                        <label>ITBMS (7%)</label>
+
+                        <input
+                            type="text"
+                            [value]="itbms | currency"
+                            disabled>
+
+                    </div>
+
+                    <div class="campo">
+
+                        <label>Total</label>
+
+                        <input
+                            type="text"
+                            [value]="total | currency"
+                            disabled>
 
                     </div>
 
@@ -182,6 +219,14 @@
                         <th>Producto</th>
 
                         <th>Fecha</th>
+
+                        <th>Cantidad</th>
+
+                        <th>Precio Unit.</th>
+
+                        <th>Subtotal</th>
+
+                        <th>ITBMS</th>
 
                         <th>Total</th>
 
@@ -231,11 +276,15 @@
 
                         </td>
 
-                        <td>
+                        <td>{{ venta.cantidad }}</td>
 
-                            {{ venta.total | currency }}
+                        <td>{{ venta.precioUnitario | currency }}</td>
 
-                        </td>
+                        <td>{{ venta.subtotal | currency }}</td>
+
+                        <td>{{ venta.itbms | currency }}</td>
+
+                        <td>{{ venta.total | currency }}</td>
 
                         <td>
 
