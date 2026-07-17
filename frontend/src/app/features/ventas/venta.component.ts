@@ -19,7 +19,7 @@ import { ProductoService } from '../../core/services/producto.service';
 import { Venta } from '../../shared/interfaces/venta.interface';
 import { Cliente } from '../../shared/interfaces/cliente.interface';
 import { Usuario } from '../../shared/interfaces/usuario.interface';
-import { Producto } from '../../shared/interfaces/producto.interface';
+import { Producto, ProductosResponse } from '../../shared/interfaces/producto.interface';
 
 @Component({
   selector: 'app-venta',
@@ -153,9 +153,9 @@ export class VentaComponent implements OnInit {
 
     this.productoService.getProductos().subscribe({
 
-      next: (data: Producto[]) => {
+      next: (data: ProductosResponse) => {
 
-        this.productos = data;
+        this.productos = data.productos;
 
       },
 
@@ -167,7 +167,7 @@ export class VentaComponent implements OnInit {
 
     });
 
-  }
+}
 
   guardarVenta(): void {
 
