@@ -8,10 +8,15 @@ import { VentaService } from '../../core/services/venta.service';
 import { ClienteService } from '../../core/services/cliente.service';
 import { UsuarioService } from '../../core/services/usuario.service';
 import { TicketService } from '../../core/services/ticket.service';
+import { ProductoService } from '../../core/services/producto.service';
+import { NotifiService } from '../../core/services/notifi.service';
 
 import { Venta } from '../../shared/interfaces/venta.interface';
 import { Cliente } from '../../shared/interfaces/cliente.interface';
 import { Ticket } from '../../shared/interfaces/ticket.interface';
+import { Producto, ProductosResponse } from '../../shared/interfaces/producto.interface';
+import { Notifi } from '../../shared/interfaces/notifi.interface';
+import { Usuario } from '../../shared/interfaces/usuario.interface';
 
 interface ClienteVentas {
 
@@ -61,6 +66,8 @@ const COLORES_PIE = [
   '#0dcaf0', '#d63384'
 ];
 
+const STOCK_MINIMO = 5;
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -77,13 +84,21 @@ export class DashboardComponent implements OnInit {
 
   clientes: Cliente[] = [];
 
+  usuarios: Usuario[] = [];
+
   tickets: Ticket[] = [];
+
+  productos: Producto[] = [];
+
+  notificaciones: Notifi[] = [];
 
   clientesRanking: ClienteVentas[] = [];
 
   productosRanking: ProductoVentas[] = [];
 
   usuariosPie: UsuarioPie[] = [];
+
+  productosStockBajo: Producto[] = [];
 
   pieGradient = '';
 
@@ -104,7 +119,9 @@ export class DashboardComponent implements OnInit {
     private ventaService: VentaService,
     private clienteService: ClienteService,
     private usuarioService: UsuarioService,
-    private ticketService: TicketService
+    private ticketService: TicketService,
+    private productoService: ProductoService,
+    private notifiService: NotifiService
   ) { }
 
   ngOnInit(): void {
@@ -170,6 +187,74 @@ export class DashboardComponent implements OnInit {
         this.ticketsAbiertos = data.filter(
           t => t.estado === 'Abierto' || t.estado === 'En curso'
         ).length;
+
+      },
+
+      error: (err: Error) => {
+
+        console.error(err);
+
+      }
+
+    });
+
+    this.usuarioService.getUsers().subscribe({
+
+      next: (data: Usuario[]) => {
+
+        this.usuarios = data;
+
+        this.cargarNotificacionesYProductos();
+
+      },
+
+      error: (err: Error) => {
+
+        console.error(err);
+
+        this.cargarNotificacionesYProductos();
+
+      }
+
+    });
+
+  }
+
+  cargarNotificacionesYProductos(): void {
+
+    this.notifiService.getNotifis().subscribe({
+
+      next: (data: Notifi[]) => {
+
+        this.notificaciones = data;
+
+        this.cargarProductosYRevisarStock();
+
+      },
+
+      error: (err: Error) => {
+
+        console.error(err);
+
+        this.cargarProductosYRevisarStock();
+
+      }
+
+    });
+
+  }
+
+  cargarProductosYRevisarStock(): void {
+
+    this.productoService.getProductos().subscribe({
+
+      next: (data: ProductosResponse) => {
+
+        this.productos = data.productos;
+
+        this.calcularPuntoReorden();
+
+        this.revisarStockYNotificar();
 
       },
 
@@ -360,6 +445,105 @@ export class DashboardComponent implements OnInit {
       : '#eef1f5';
 
     this.usuariosPie = lista;
+
+  }
+
+  calcularPuntoReorden(): void {
+
+    this.productosStockBajo = this.productos
+      .filter(p => p.stock < STOCK_MINIMO)
+      .sort((a, b) => a.stock - b.stock);
+
+  }
+
+  obtenerPorcentajeStock(stock: number): number {
+
+    const maxReferencia = 20;
+
+    const porcentaje = (stock / maxReferencia) * 100;
+
+    return porcentaje > 100 ? 100 : porcentaje;
+
+  }
+
+  obtenerUsuarioResponsable(): string | null {
+
+    const porNombre = this.usuarios.find(
+      u => (u as any).nombre?.toLowerCase().includes('julian')
+    );
+
+    if (porNombre) {
+
+      return porNombre._id!;
+
+    }
+
+    const porRolAdmin = this.usuarios.find(
+      u => (u as any).rol?.toLowerCase() === 'admin'
+    );
+
+    if (porRolAdmin) {
+
+      return porRolAdmin._id!;
+
+    }
+
+    return this.usuarios.length > 0 ? this.usuarios[0]._id! : null;
+
+  }
+
+  revisarStockYNotificar(): void {
+
+    const usuarioResponsable = this.obtenerUsuarioResponsable();
+
+    if (!usuarioResponsable) {
+
+      return;
+
+    }
+
+    for (const producto of this.productos) {
+
+      if (producto.stock < STOCK_MINIMO) {
+
+        const mensajeEsperado =
+          `${producto.nombre} tiene stock por debajo de lo recomendado. Favor restablecer el stock.`;
+
+        const yaExiste = this.notificaciones.some(
+          n => n.mensaje === mensajeEsperado
+        );
+
+        if (!yaExiste) {
+
+          this.notifiService.crearNotifi({
+
+            mensaje: mensajeEsperado,
+
+            usuario: usuarioResponsable,
+
+            fecha: new Date().toISOString()
+
+          } as Notifi).subscribe({
+
+            next: (nueva: Notifi) => {
+
+              this.notificaciones.push(nueva);
+
+            },
+
+            error: (err: Error) => {
+
+              console.error(err);
+
+            }
+
+          });
+
+        }
+
+      }
+
+    }
 
   }
 

@@ -310,6 +310,62 @@
 
             </div>
 
+            <!-- PUNTO DE REORDEN -->
+
+            <div class="card">
+
+                <h2>Punto de reorden de inventario</h2>
+
+                <p class="subtexto-card">
+
+                    Productos con stock por debajo del mínimo recomendado (5 unidades)
+
+                </p>
+
+                <div *ngIf="productosStockBajo.length === 0" class="sin-datos ok-stock">
+
+                    ✅ Todos los productos tienen stock saludable.
+
+                </div>
+
+                <div
+                    class="stock-item"
+                    *ngFor="let p of productosStockBajo">
+
+                    <div class="stock-alerta-icono">⚠️</div>
+
+                    <div class="ranking-detalle">
+
+                        <div class="ranking-nombre">
+
+                            <span>{{ p.nombre }}</span>
+
+                            <span class="stock-numero">{{ p.stock }} uds</span>
+
+                        </div>
+
+                        <div class="ranking-barra-fondo">
+
+                            <div
+                                class="ranking-barra stock-barra"
+                                [style.width.%]="obtenerPorcentajeStock(p.stock)">
+
+                            </div>
+
+                        </div>
+
+                        <span class="ranking-cantidad stock-mensaje">
+
+                            Stock crítico — se generó notificación automática
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
     </main>
