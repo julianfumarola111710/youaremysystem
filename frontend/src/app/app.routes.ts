@@ -8,6 +8,7 @@ import { UsuarioComponent } from './features/usuarios/usuario.component';
 import { ActividadComponent } from './features/actividades/actividad.component';
 import { ProductosComponent } from './features/productos/productos.component';
 import { VentaComponent } from './features/ventas/venta.component';
+import { TicketComponent } from './features/tickets/ticket.component';
 
 export const routes: Routes = [
   {
@@ -52,6 +53,11 @@ export const routes: Routes = [
   {
     path: 'ventas',
     component: VentaComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'tickets',
+    component: TicketComponent,
     canActivate: [authGuard]
   }
 ];

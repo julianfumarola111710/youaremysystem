@@ -1,0 +1,289 @@
+<div class="dashboard-page">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="logo-area">
+
+            <img
+                src="logopitahaya.png"
+                class="logo">
+
+            <h2>PITAHAYA CRM</h2>
+
+        </div>
+
+        <nav>
+
+            <button routerLink="/dashboard">
+                🏠 Dashboard
+            </button>
+
+            <button routerLink="/usuarios">
+                👤 Usuarios
+            </button>
+
+            <button routerLink="/clientes">
+                👥 Clientes
+            </button>
+
+            <button routerLink="/productos">
+                📦 Productos
+            </button>
+
+            <button routerLink="/ventas">
+                💰 Ventas
+            </button>
+
+            <button routerLink="/actividades">
+                📅 Actividades
+            </button>
+
+            <button
+                class="activo"
+                routerLink="/tickets">
+
+                🎫 Tickets
+
+            </button>
+
+            <button routerLink="/notificaciones">
+                🔔 Notificaciones
+            </button>
+
+        </nav>
+
+    </aside>
+
+    <!-- CONTENIDO -->
+
+    <main class="contenido">
+
+        <div class="card">
+
+            <h1>Gestión de Tickets de Soporte</h1>
+
+            <form
+                [formGroup]="ticketForm"
+                (ngSubmit)="guardarTicket()">
+
+                <div class="fila">
+
+                    <div class="campo">
+
+                        <label>Cliente</label>
+
+                        <select formControlName="cliente">
+                            <option value="">-- Seleccione cliente --</option>
+                            <option *ngFor="let c of clientes" [value]="c._id">
+                                {{ c.nombre }}
+                            </option>
+                        </select>
+
+                    </div>
+
+                    <div class="campo">
+
+                        <label>Responsable</label>
+
+                        <select formControlName="responsable">
+                            <option value="">-- Sin asignar --</option>
+                            <option *ngFor="let u of usuarios" [value]="u._id">
+                                {{ u.nombre }}
+                            </option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div class="fila">
+
+                    <div class="campo">
+
+                        <label>Problema</label>
+
+                        <input
+                            type="text"
+                            formControlName="problema">
+
+                    </div>
+
+                </div>
+
+                <div class="fila">
+
+                    <div class="campo">
+
+                        <label>Estado</label>
+
+                        <select formControlName="estado">
+                            <option value="Abierto">Abierto</option>
+                            <option value="En curso">En curso</option>
+                            <option value="En espera">En espera</option>
+                            <option value="Resuelto">Resuelto</option>
+                            <option value="Terminado">Terminado</option>
+                            <option value="Cerrado">Cerrado</option>
+                        </select>
+
+                    </div>
+
+                    <div class="campo">
+
+                        <label>Prioridad</label>
+
+                        <select formControlName="prioridad">
+                            <option value="Baja">Baja</option>
+                            <option value="Media">Media</option>
+                            <option value="Alta">Alta</option>
+                            <option value="Urgente">Urgente</option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div class="botones">
+
+                    <button
+                        type="submit"
+                        class="guardar">
+
+                        {{ ticketSeleccionado ? 'Actualizar Ticket' : 'Guardar Ticket' }}
+
+                    </button>
+
+                    <button
+                        type="button"
+                        class="cancelar"
+                        (click)="limpiarFormulario()">
+
+                        Limpiar
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <div class="card">
+
+            <h2>Listado de Tickets</h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Cliente</th>
+
+                        <th>Problema</th>
+
+                        <th>Estado</th>
+
+                        <th>Prioridad</th>
+
+                        <th>Responsable</th>
+
+                        <th>Acciones</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let ticket of tickets">
+
+                        <td>
+
+                            {{
+                                ticket.cliente
+                                    && $any(ticket.cliente).nombre
+                                    || ticket.cliente
+                            }}
+
+                        </td>
+
+                        <td>{{ ticket.problema }}</td>
+
+                        <td>
+
+                            <span
+                                class="badge"
+                                [ngClass]="{
+                                    'badge-abierto': ticket.estado === 'Abierto',
+                                    'badge-curso': ticket.estado === 'En curso',
+                                    'badge-espera': ticket.estado === 'En espera',
+                                    'badge-resuelto': ticket.estado === 'Resuelto' || ticket.estado === 'Terminado',
+                                    'badge-cerrado': ticket.estado === 'Cerrado'
+                                }">
+
+                                {{ ticket.estado }}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <span
+                                class="badge"
+                                [ngClass]="{
+                                    'badge-baja': ticket.prioridad === 'Baja',
+                                    'badge-media': ticket.prioridad === 'Media',
+                                    'badge-alta': ticket.prioridad === 'Alta',
+                                    'badge-urgente': ticket.prioridad === 'Urgente'
+                                }">
+
+                                {{ ticket.prioridad }}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            {{
+                                ticket.responsable
+                                    && $any(ticket.responsable).nombre
+                                    || 'Sin asignar'
+                            }}
+
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="editar"
+                                (click)="editar(ticket)">
+
+                                Editar
+
+                            </button>
+
+                            <button
+                                class="eliminar"
+                                (click)="eliminar(ticket._id)">
+
+                                Eliminar
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+</div>

@@ -14,6 +14,7 @@ const clientesRoutes = require('./src/routes/clientesRoutes');
 const notifiRoutes = require('./src/routes/notifiRoutes');
 const actividadRoutes = require('./src/routes/actividadRoutes');
 const ventaRoutes = require('./src/routes/ventaRoutes');
+const ticketRoutes = require('./src/routes/ticketRoutes');
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use('/api/clientes', clientesRoutes);
 app.use('/api/notifi', notifiRoutes);
 app.use('/api/actividades', actividadRoutes);
 app.use('/api/ventas', ventaRoutes);
+app.use('/api/tickets', ticketRoutes);
 
 // Servir el build de Angular
 app.use(express.static(path.join(__dirname, '../frontend/dist/frontend/browser')));
