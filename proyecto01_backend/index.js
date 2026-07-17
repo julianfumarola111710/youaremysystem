@@ -30,7 +30,7 @@ app.use('/api/productos', productosRoutes);
 app.use('/api/stakeholder', stakeholderRoutes);
 app.use('/api/clientes', clientesRoutes);
 app.use('/api/notifi', notifiRoutes);
-app.use('/api/actividad', actividadRoutes);
+app.use('/api/actividades', actividadRoutes);
 
 // Servir el build de Angular
 app.use(express.static(path.join(__dirname, '../frontend/dist/frontend/browser')));
