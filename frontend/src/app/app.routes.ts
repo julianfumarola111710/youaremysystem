@@ -5,6 +5,7 @@ import { ClientesComponent } from './features/clientes/clientes.component';
 import { authGuard } from './core/guards/auth.guard';
 import { NotifiComponent } from './features/notificaciones/notifi.component';
 import { UsuarioComponent } from './features/usuarios/usuario.component';
+import { ActividadComponent } from './features/actividades/actividad.component';
 import { ProductosComponent } from './features/productos/productos.component';
 
 export const routes: Routes = [
@@ -23,23 +24,28 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
-  path: 'clientes',
-  component: ClientesComponent,
-  canActivate: [authGuard]
-},
-{
-  path: 'notificaciones',
-  component: NotifiComponent,
-  canActivate: [authGuard]
-},
-{
-  path: 'usuarios',
-  component: UsuarioComponent,
-  canActivate: [authGuard]
-},
-{
-  path: 'productos',
-  component: ProductosComponent,
-  canActivate: [authGuard]
-}
+    path: 'clientes',
+    component: ClientesComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'notificaciones',
+    component: NotifiComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'usuarios',
+    component: UsuarioComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'actividades',
+    component: ActividadComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'productos',
+    component: ProductosComponent,
+    canActivate: [authGuard]
+  }
 ];

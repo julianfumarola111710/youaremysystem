@@ -1,0 +1,272 @@
+<div class="dashboard-page">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="logo-area">
+
+            <img
+                src="logopitahaya.png"
+                class="logo">
+
+            <h2>PITAHAYA CRM</h2>
+
+        </div>
+
+        <nav>
+
+            <button routerLink="/dashboard">
+                🏠 Dashboard
+            </button>
+
+            <button routerLink="/usuarios">
+                👤 Usuarios
+            </button>
+
+            <button routerLink="/clientes">
+                👥 Clientes
+            </button>
+
+            <button routerLink="/productos">
+                📦 Productos
+            </button>
+
+            <button routerLink="/ventas">
+                💰 Ventas
+            </button>
+
+            <button
+                class="activo"
+                routerLink="/actividades">
+
+                📅 Actividades
+
+            </button>
+
+            <button routerLink="/tickets">
+                🎫 Tickets
+            </button>
+
+            <button routerLink="/notificaciones">
+                🔔 Notificaciones
+            </button>
+
+        </nav>
+
+    </aside>
+
+    <!-- CONTENIDO -->
+
+    <main class="contenido">
+
+        <div class="card">
+
+            <h1>Gestión de Actividades</h1>
+
+            <form
+                [formGroup]="actividadForm"
+                (ngSubmit)="guardarActividad()">
+
+                <div class="fila">
+
+                    <div class="campo">
+
+    <label>Tipo</label>
+
+    <select formControlName="tipo">
+        <option value="">-- Seleccione tipo --</option>
+        <option value="Llamada">Llamada</option>
+        <option value="Visita">Visita</option>
+        <option value="Reunión">Reunión</option>
+        <option value="Videollamada">Videollamada</option>
+        <option value="Correo electrónico">Correo electrónico</option>
+        <option value="Seguimiento">Seguimiento</option>
+        <option value="Demostración">Demostración</option>
+        <option value="Presentación comercial">Presentación comercial</option>
+        <option value="Cotización">Cotización</option>
+        <option value="Negociación">Negociación</option>
+        <option value="Cierre de venta">Cierre de venta</option>
+        <option value="Renovación de contrato">Renovación de contrato</option>
+        <option value="Soporte técnico">Soporte técnico</option>
+        <option value="Capacitación">Capacitación</option>
+        <option value="Instalación">Instalación</option>
+        <option value="Entrega de producto">Entrega de producto</option>
+        <option value="Cobro">Cobro</option>
+        <option value="Recordatorio de pago">Recordatorio de pago</option>
+        <option value="Encuesta de satisfacción">Encuesta de satisfacción</option>
+        <option value="Reunión de seguimiento">Reunión de seguimiento</option>
+        <option value="Prospección">Prospección</option>
+        <option value="Contacto inicial">Contacto inicial</option>
+        <option value="Calificación de cliente">Calificación de cliente</option>
+        <option value="Actualización de datos">Actualización de datos</option>
+        <option value="Resolución de incidencia">Resolución de incidencia</option>
+        <option value="Firma de contrato">Firma de contrato</option>
+        <option value="Presentación de propuesta">Presentación de propuesta</option>
+        <option value="Confirmación de pedido">Confirmación de pedido</option>
+        <option value="Agendamiento de cita">Agendamiento de cita</option>
+        <option value="Networking">Networking</option>
+        <option value="Evento comercial">Evento comercial</option>
+        <option value="Feria empresarial">Feria empresarial</option>
+        <option value="Llamada postventa">Llamada postventa</option>
+        <option value="Visita técnica">Visita técnica</option>
+        <option value="Auditoría">Auditoría</option>
+        <option value="Revisión de contrato">Revisión de contrato</option>
+        <option value="Gestión de reclamo">Gestión de reclamo</option>
+        <option value="Seguimiento de oportunidad">Seguimiento de oportunidad</option>
+        <option value="Seguimiento postventa">Seguimiento postventa</option>
+        <option value="Fidelización de cliente">Fidelización de cliente</option>
+    </select>
+
+</div>
+
+                    <div class="campo">
+
+                        <label>Descripción</label>
+
+                        <input
+                            type="text"
+                            formControlName="descripcion">
+
+                    </div>
+
+                </div>
+
+                <div class="fila">
+
+                    <div class="campo">
+
+                        <label>Cliente</label>
+
+                        <select formControlName="cliente">
+                            <option value="">-- Seleccione cliente --</option>
+                            <option *ngFor="let c of clientes" [value]="c._id">
+                                {{ c.nombre }}
+                            </option>
+                        </select>
+
+                    </div>
+
+                    <div class="campo">
+
+                        <label>Responsable</label>
+
+                        <select formControlName="responsable">
+                            <option value="">-- Seleccione responsable --</option>
+                            <option *ngFor="let u of usuarios" [value]="u._id">
+                                {{ u.nombre }}
+                            </option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div class="botones">
+
+                    <button
+                        type="submit"
+                        class="guardar">
+
+                        {{ actividadSeleccionada ? 'Actualizar Actividad' : 'Guardar Actividad' }}
+
+                    </button>
+
+                    <button
+                        type="button"
+                        class="cancelar"
+                        (click)="limpiarFormulario()">
+
+                        Limpiar
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <div class="card">
+
+            <h2>Listado de Actividades</h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Tipo</th>
+
+                        <th>Descripción</th>
+
+                        <th>Cliente</th>
+
+                        <th>Responsable</th>
+
+                        <th>Acciones</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let actividad of actividades">
+
+                        <td>{{ actividad.tipo }}</td>
+
+                        <td>{{ actividad.descripcion }}</td>
+
+                        <td>
+
+                            {{
+                                actividad.cliente
+                                    && $any(actividad.cliente).nombre
+                                    || actividad.cliente
+                            }}
+
+                        </td>
+
+                        <td>
+
+                            {{
+                                actividad.responsable
+                                    && $any(actividad.responsable).nombre
+                                    || actividad.responsable
+                            }}
+
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="editar"
+                                (click)="editar(actividad)">
+
+                                Editar
+
+                            </button>
+
+                            <button
+                                class="eliminar"
+                                (click)="eliminar(actividad._id)">
+
+                                Eliminar
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+</div>
