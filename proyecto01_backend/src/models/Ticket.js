@@ -37,7 +37,7 @@ const ticketSchema = new mongoose.Schema({
 
 },{
     timestamps:true,
-    collection :'Tickets'
+    collection :'TicketsSoporte'
 });
 
 module.exports=mongoose.model(
