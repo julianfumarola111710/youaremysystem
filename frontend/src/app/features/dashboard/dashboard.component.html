@@ -150,53 +150,159 @@
 
             </div>
 
-            <!-- RANKING DE CLIENTES -->
+            <!-- FILA DOBLE: RANKING CLIENTES + PRODUCTOS -->
+
+            <div class="doble-columna">
+
+                <!-- RANKING DE CLIENTES -->
+
+                <div class="card">
+
+                    <h2>Clientes con mayores ventas</h2>
+
+                    <div *ngIf="clientesRanking.length === 0" class="sin-datos">
+
+                        Aún no hay ventas registradas.
+
+                    </div>
+
+                    <div
+                        class="ranking-item"
+                        *ngFor="let c of clientesRanking; let i = index">
+
+                        <div class="ranking-posicion">
+
+                            #{{ i + 1 }}
+
+                        </div>
+
+                        <div class="ranking-detalle">
+
+                            <div class="ranking-nombre">
+
+                                <span>{{ c.nombre }}</span>
+
+                                <span class="ranking-monto">{{ c.totalVentas | currency }}</span>
+
+                            </div>
+
+                            <div class="ranking-barra-fondo">
+
+                                <div
+                                    class="ranking-barra"
+                                    [style.width.%]="c.porcentaje">
+
+                                </div>
+
+                            </div>
+
+                            <span class="ranking-cantidad">
+
+                                {{ c.cantidadVentas }} {{ c.cantidadVentas === 1 ? 'venta' : 'ventas' }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- PRODUCTOS MÁS VENDIDOS -->
+
+                <div class="card">
+
+                    <h2>Productos más vendidos</h2>
+
+                    <div *ngIf="productosRanking.length === 0" class="sin-datos">
+
+                        Aún no hay ventas registradas.
+
+                    </div>
+
+                    <div
+                        class="ranking-item"
+                        *ngFor="let p of productosRanking; let i = index">
+
+                        <div class="ranking-posicion producto-pos">
+
+                            #{{ i + 1 }}
+
+                        </div>
+
+                        <div class="ranking-detalle">
+
+                            <div class="ranking-nombre">
+
+                                <span>{{ p.nombre }}</span>
+
+                                <span class="ranking-monto">{{ p.cantidadVendida }} uds</span>
+
+                            </div>
+
+                            <div class="ranking-barra-fondo">
+
+                                <div
+                                    class="ranking-barra producto-barra"
+                                    [style.width.%]="p.porcentaje">
+
+                                </div>
+
+                            </div>
+
+                            <span class="ranking-cantidad">
+
+                                {{ p.montoTotal | currency }} en ventas
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- PIE CHART: VENTAS POR USUARIO -->
 
             <div class="card">
 
-                <h2>Clientes con mayores ventas</h2>
+                <h2>Ventas por usuario</h2>
 
-                <div *ngIf="clientesRanking.length === 0" class="sin-datos">
+                <div *ngIf="usuariosPie.length === 0" class="sin-datos">
 
                     Aún no hay ventas registradas.
 
                 </div>
 
-                <div
-                    class="ranking-item"
-                    *ngFor="let c of clientesRanking; let i = index">
+                <div class="pie-container" *ngIf="usuariosPie.length > 0">
 
-                    <div class="ranking-posicion">
-
-                        #{{ i + 1 }}
-
+                    <div
+                        class="pie-chart"
+                        [style.background]="pieGradient">
                     </div>
 
-                    <div class="ranking-detalle">
+                    <div class="pie-leyenda">
 
-                        <div class="ranking-nombre">
+                        <div
+                            class="leyenda-item"
+                            *ngFor="let u of usuariosPie">
 
-                            <span>{{ c.nombre }}</span>
+                            <span
+                                class="leyenda-color"
+                                [style.background]="u.color">
+                            </span>
 
-                            <span class="ranking-monto">{{ c.totalVentas | currency }}</span>
+                            <span class="leyenda-nombre">{{ u.nombre }}</span>
+
+                            <span class="leyenda-valor">
+
+                                {{ u.cantidadVentas }} ({{ u.porcentaje }}%)
+
+                            </span>
 
                         </div>
-
-                        <div class="ranking-barra-fondo">
-
-                            <div
-                                class="ranking-barra"
-                                [style.width.%]="c.porcentaje">
-
-                            </div>
-
-                        </div>
-
-                        <span class="ranking-cantidad">
-
-                            {{ c.cantidadVentas }} {{ c.cantidadVentas === 1 ? 'venta' : 'ventas' }}
-
-                        </span>
 
                     </div>
 

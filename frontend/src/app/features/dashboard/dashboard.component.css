@@ -162,7 +162,15 @@ nav button:hover{
     margin-top:4px;
 }
 
-/* RANKING DE CLIENTES */
+/* DOBLE COLUMNA */
+
+.doble-columna{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:25px;
+}
+
+/* RANKING (clientes y productos comparten estilo base) */
 
 .sin-datos{
     color:#888;
@@ -195,6 +203,10 @@ nav button:hover{
     flex-shrink:0;
 }
 
+.producto-pos{
+    background:#fd7e14;
+}
+
 .ranking-detalle{
     flex:1;
 }
@@ -224,11 +236,82 @@ nav button:hover{
     transition:width .4s ease;
 }
 
+.producto-barra{
+    background:linear-gradient(90deg, #fd7e14, #ffc107);
+}
+
 .ranking-cantidad{
     font-size:12px;
     color:#888;
     margin-top:5px;
     display:inline-block;
+}
+
+/* PIE CHART */
+
+.pie-container{
+    display:flex;
+    align-items:center;
+    gap:40px;
+    flex-wrap:wrap;
+}
+
+.pie-chart{
+    width:220px;
+    height:220px;
+    border-radius:50%;
+    flex-shrink:0;
+    box-shadow:0 4px 10px rgba(0,0,0,.1);
+}
+
+.pie-leyenda{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    flex:1;
+    min-width:200px;
+}
+
+.leyenda-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.leyenda-color{
+    width:14px;
+    height:14px;
+    border-radius:4px;
+    flex-shrink:0;
+}
+
+.leyenda-nombre{
+    flex:1;
+    font-weight:bold;
+    color:#24292e;
+}
+
+.leyenda-valor{
+    color:#888;
+    font-size:13px;
+}
+
+/* RESPONSIVE BÁSICO */
+
+@media (max-width: 900px){
+
+    .doble-columna{
+        grid-template-columns:1fr;
+    }
+
+    .stats-grid{
+        grid-template-columns:repeat(2, 1fr);
+    }
+
+    .pie-container{
+        flex-direction:column;
+    }
+
 }
 
 /* TABLA (por si se reutiliza estilo en otro lado) */
