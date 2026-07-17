@@ -7,6 +7,7 @@ import { NotifiComponent } from './features/notificaciones/notifi.component';
 import { UsuarioComponent } from './features/usuarios/usuario.component';
 import { ActividadComponent } from './features/actividades/actividad.component';
 import { ProductosComponent } from './features/productos/productos.component';
+import { VentaComponent } from './features/ventas/venta.component';
 
 export const routes: Routes = [
   {
@@ -46,6 +47,11 @@ export const routes: Routes = [
   {
     path: 'productos',
     component: ProductosComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'ventas',
+    component: VentaComponent,
     canActivate: [authGuard]
   }
 ];
