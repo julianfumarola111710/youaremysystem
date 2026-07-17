@@ -1,5 +1,5 @@
 const Venta = require('../models/Venta');
-const Producto = require('../models/Producto');
+const Producto = require('../models/productos');
 
 const ITBMS_RATE = 0.07;
 
