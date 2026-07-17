@@ -12,6 +12,7 @@ const stakeholderRoutes = require('./src/routes/stakeholderRoutes');
 const authRoutes = require('./src/routes/authRoutes');
 const clientesRoutes = require('./src/routes/clientesRoutes');
 const notifiRoutes = require('./src/routes/notifiRoutes');
+const actividadRoutes = require('./src/routes/actividadRoutes');
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use('/api/productos', productosRoutes);
 app.use('/api/stakeholder', stakeholderRoutes);
 app.use('/api/clientes', clientesRoutes);
 app.use('/api/notifi', notifiRoutes);
+app.use('/api/actividad', actividadRoutes);
 
 // Servir el build de Angular
 app.use(express.static(path.join(__dirname, '../frontend/dist/frontend/browser')));

@@ -5,6 +5,7 @@ import { ClientesComponent } from './features/clientes/clientes.component';
 import { authGuard } from './core/guards/auth.guard';
 import { NotifiComponent } from './features/notificaciones/notifi.component';
 import { UsuarioComponent } from './features/usuarios/usuario.component';
+import { ActividadComponent } from './features/actividades/actividad.component';
 
 export const routes: Routes = [
   {
@@ -34,6 +35,11 @@ export const routes: Routes = [
 {
   path: 'usuarios',
   component: UsuarioComponent,
+  canActivate: [authGuard]
+},
+{
+  path: 'actividades',
+  component: ActividadComponent,
   canActivate: [authGuard]
 }
 ];
