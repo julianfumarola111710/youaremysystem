@@ -12,7 +12,11 @@
 }
 
 /* SIDEBAR */
-
+.aviso-guest{
+    color:#888;
+    font-size:15px;
+    padding:10px 0;
+}
 .sidebar{
     width:260px;
     background:#24292e;

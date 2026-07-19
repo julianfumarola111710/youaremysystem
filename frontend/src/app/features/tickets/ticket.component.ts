@@ -14,6 +14,7 @@ import {
 import { TicketService } from '../../core/services/ticket.service';
 import { ClienteService } from '../../core/services/cliente.service';
 import { UsuarioService } from '../../core/services/usuario.service';
+import { TokenService } from '../../core/services/token.service';
 
 import { Ticket } from '../../shared/interfaces/ticket.interface';
 import { Cliente } from '../../shared/interfaces/cliente.interface';
@@ -43,6 +44,10 @@ export class TicketComponent implements OnInit {
 
   ticketForm: FormGroup;
 
+  rolActual: string = '';
+
+  puedeCrear = false;
+
   constructor(
 
     private fb: FormBuilder,
@@ -51,7 +56,9 @@ export class TicketComponent implements OnInit {
 
     private clienteService: ClienteService,
 
-    private usuarioService: UsuarioService
+    private usuarioService: UsuarioService,
+
+    private tokenService: TokenService
 
   ) {
 
@@ -72,6 +79,12 @@ export class TicketComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    const user = this.tokenService.getUser();
+
+    this.rolActual = user?.rol || '';
+
+    this.puedeCrear = this.rolActual === 'admin' || this.rolActual === 'user';
 
     this.cargarTickets();
 
@@ -229,6 +242,12 @@ export class TicketComponent implements OnInit {
 
   editar(ticket: Ticket): void {
 
+    if (!this.puedeCrear) {
+
+      return;
+
+    }
+
     this.ticketSeleccionado = ticket;
 
     this.ticketForm.patchValue({
@@ -254,6 +273,12 @@ export class TicketComponent implements OnInit {
   }
 
   eliminar(id?: string): void {
+
+    if (this.rolActual !== 'admin') {
+
+      return;
+
+    }
 
     if (!id) {
 

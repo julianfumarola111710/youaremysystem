@@ -213,10 +213,16 @@
       </form>
 
     </section>
-    <div
-  class="mensaje mensaje-exito"
-  *ngIf="!esAdmin">
-  Tiene acceso de consulta al catálogo de productos.
+    <div class="card" *ngIf="!esAdmin">
+
+    <h1>Productos</h1>
+
+    <p class="aviso-guest">
+
+        No tienes permisos para crear o editar productos. Solo puedes consultar el listado.
+
+    </p>
+
 </div>
 
     <section class="card">

@@ -15,6 +15,7 @@ import { VentaService } from '../../core/services/venta.service';
 import { ClienteService } from '../../core/services/cliente.service';
 import { UsuarioService } from '../../core/services/usuario.service';
 import { ProductoService } from '../../core/services/producto.service';
+import { TokenService } from '../../core/services/token.service';
 
 import { Venta } from '../../shared/interfaces/venta.interface';
 import { Cliente } from '../../shared/interfaces/cliente.interface';
@@ -55,6 +56,10 @@ export class VentaComponent implements OnInit {
 
   total = 0;
 
+  rolActual: string = '';
+
+  puedeCrear = false;
+
   constructor(
 
     private fb: FormBuilder,
@@ -65,7 +70,9 @@ export class VentaComponent implements OnInit {
 
     private usuarioService: UsuarioService,
 
-    private productoService: ProductoService
+    private productoService: ProductoService,
+
+    private tokenService: TokenService
 
   ) {
 
@@ -86,6 +93,12 @@ export class VentaComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    const user = this.tokenService.getUser();
+
+    this.rolActual = user?.rol || '';
+
+    this.puedeCrear = this.rolActual === 'admin' || this.rolActual === 'user';
 
     this.cargarVentas();
 
@@ -295,6 +308,12 @@ export class VentaComponent implements OnInit {
 
   editar(venta: Venta): void {
 
+    if (!this.puedeCrear) {
+
+      return;
+
+    }
+
     this.ventaSeleccionada = venta;
 
     this.ventaForm.patchValue({
@@ -325,6 +344,12 @@ export class VentaComponent implements OnInit {
   }
 
   eliminar(id?: string): void {
+
+    if (this.rolActual !== 'admin') {
+
+      return;
+
+    }
 
     if (!id) {
 

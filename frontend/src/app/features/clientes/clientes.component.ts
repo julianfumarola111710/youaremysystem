@@ -6,8 +6,11 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
-//clientes
+
+import { HttpErrorResponse } from '@angular/common/http';
+
 import { ClienteService } from '../../core/services/cliente.service';
+import { TokenService } from '../../core/services/token.service';
 import { Cliente } from '../../shared/interfaces/cliente.interface';
 import { RouterLink } from '@angular/router';
 
@@ -30,9 +33,14 @@ export class ClientesComponent implements OnInit {
 
   clienteForm: FormGroup;
 
+  rolActual: string = '';
+
+  puedeCrear = false;
+
   constructor(
     private fb: FormBuilder,
-    private clienteService: ClienteService
+    private clienteService: ClienteService,
+    private tokenService: TokenService
   ) {
 
     this.clienteForm = this.fb.group({
@@ -51,6 +59,12 @@ export class ClientesComponent implements OnInit {
 
   ngOnInit(): void {
 
+    const user = this.tokenService.getUser();
+
+    this.rolActual = user?.rol || '';
+
+    this.puedeCrear = this.rolActual === 'admin' || this.rolActual === 'user';
+
     this.cargarClientes();
 
   }
@@ -59,13 +73,13 @@ export class ClientesComponent implements OnInit {
 
     this.clienteService.getClientes().subscribe({
 
-      next: (data) => {
+      next: (data: Cliente[]) => {
 
         this.clientes = data;
 
       },
 
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
 
         console.error(err);
 
@@ -109,7 +123,11 @@ export class ClientesComponent implements OnInit {
 
         },
 
-        error: err => console.error(err)
+        error: (err: HttpErrorResponse) => {
+
+          console.error(err);
+
+        }
 
       });
 
@@ -143,13 +161,23 @@ export class ClientesComponent implements OnInit {
 
         },
 
-        error: err => console.error(err)
+        error: (err: HttpErrorResponse) => {
+
+          console.error(err);
+
+        }
 
       });
 
   }
 
   editar(cliente: Cliente): void {
+
+    if (!this.puedeCrear) {
+
+      return;
+
+    }
 
     this.clienteSeleccionado = cliente;
 
@@ -168,6 +196,12 @@ export class ClientesComponent implements OnInit {
   }
 
   eliminar(id?: string): void {
+
+    if (this.rolActual !== 'admin') {
+
+      return;
+
+    }
 
     if (!id) {
 
@@ -193,13 +227,17 @@ export class ClientesComponent implements OnInit {
 
         },
 
-        error: err => console.error(err)
+        error: (err: HttpErrorResponse) => {
+
+          console.error(err);
+
+        }
 
       });
 
   }
 
-  limpiarFormulario(): void {
+ limpiarFormulario(): void {
 
     this.clienteSeleccionado = null;
 

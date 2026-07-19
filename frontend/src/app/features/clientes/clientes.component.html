@@ -24,8 +24,12 @@
                 👤 Usuarios
             </button>
 
-            <button routerLink="/clientes">
+            <button
+                class="activo"
+                routerLink="/clientes">
+
                 👥 Clientes
+
             </button>
 
             <button routerLink="/productos">
@@ -56,7 +60,7 @@
 
     <main class="contenido">
 
-        <div class="card">
+        <div class="card" *ngIf="puedeCrear">
 
             <h1>Gestión de Clientes</h1>
 
@@ -137,6 +141,18 @@
 
         </div>
 
+        <div class="card" *ngIf="!puedeCrear">
+
+            <h1>Clientes</h1>
+
+            <p class="aviso-guest">
+
+                No tienes permisos para crear o editar clientes. Solo puedes consultar el listado.
+
+            </p>
+
+        </div>
+
         <div class="card">
 
             <h2>Listado de Clientes</h2>
@@ -155,7 +171,7 @@
 
                         <th>Correo</th>
 
-                        <th>Acciones</th>
+                        <th *ngIf="puedeCrear">Acciones</th>
 
                     </tr>
 
@@ -173,7 +189,7 @@
 
                         <td>{{cliente.correo}}</td>
 
-                        <td>
+                        <td *ngIf="puedeCrear">
 
                             <button
                                 class="editar"
@@ -184,6 +200,7 @@
                             </button>
 
                             <button
+                                *ngIf="rolActual === 'admin'"
                                 class="eliminar"
                                 (click)="eliminar(cliente._id)">
 

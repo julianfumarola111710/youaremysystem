@@ -44,8 +44,12 @@
                 🎫 Tickets
             </button>
 
-            <button routerLink="/notificaciones">
+            <button
+                class="activo"
+                routerLink="/notificaciones">
+
                 🔔 Notificaciones
+
             </button>
 
         </nav>
@@ -56,7 +60,7 @@
 
     <main class="contenido">
 
-        <div class="card">
+        <div class="card" *ngIf="puedeCrear">
 
             <h1>Gestión de Notificaciones</h1>
 
@@ -82,16 +86,16 @@
 
                     <div class="campo">
 
-    <label>Usuario</label>
+                        <label>Usuario</label>
 
-    <select formControlName="usuario">
-        <option value="">-- Seleccione usuario --</option>
-        <option *ngFor="let u of usuarios" [value]="u._id">
-            {{ u.nombre }}
-        </option>
-    </select>
+                        <select formControlName="usuario">
+                            <option value="">-- Seleccione usuario --</option>
+                            <option *ngFor="let u of usuarios" [value]="u._id">
+                                {{ u.nombre }}
+                            </option>
+                        </select>
 
-</div>
+                    </div>
 
                     <div class="campo">
 
@@ -130,6 +134,18 @@
 
         </div>
 
+        <div class="card" *ngIf="!puedeCrear">
+
+            <h1>Notificaciones</h1>
+
+            <p class="aviso-guest">
+
+                No tienes permisos para crear o editar notificaciones. Solo puedes consultar el listado.
+
+            </p>
+
+        </div>
+
         <div class="card">
 
             <h2>Listado de Notificaciones</h2>
@@ -146,7 +162,7 @@
 
                         <th>Fecha</th>
 
-                        <th>Acciones</th>
+                        <th *ngIf="puedeCrear">Acciones</th>
 
                     </tr>
 
@@ -170,7 +186,7 @@
 
                         </td>
 
-                        <td>
+                        <td *ngIf="puedeCrear">
 
                             <button
                                 class="editar"
@@ -181,6 +197,7 @@
                             </button>
 
                             <button
+                                *ngIf="rolActual === 'admin'"
                                 class="eliminar"
                                 (click)="eliminar(notifi._id)">
 

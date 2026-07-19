@@ -8,9 +8,10 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
-//notifi
+
 import { NotifiService } from '../../core/services/notifi.service';
 import { UsuarioService } from '../../core/services/usuario.service';
+import { TokenService } from '../../core/services/token.service';
 import { Notifi } from '../../shared/interfaces/notifi.interface';
 import { Usuario } from '../../shared/interfaces/usuario.interface';
 import { RouterLink } from '@angular/router';
@@ -37,13 +38,19 @@ export class NotifiComponent implements OnInit {
 
   notifiForm: FormGroup;
 
+  rolActual: string = '';
+
+  puedeCrear = false;
+
   constructor(
 
     private fb: FormBuilder,
 
     private notifiService: NotifiService,
 
-    private usuarioService: UsuarioService
+    private usuarioService: UsuarioService,
+
+    private tokenService: TokenService
 
   ) {
 
@@ -60,6 +67,12 @@ export class NotifiComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    const user = this.tokenService.getUser();
+
+    this.rolActual = user?.rol || '';
+
+    this.puedeCrear = this.rolActual === 'admin' || this.rolActual === 'user';
 
     this.cargarNotifis();
 
@@ -195,6 +208,12 @@ export class NotifiComponent implements OnInit {
 
   editar(notifi: Notifi): void {
 
+    if (!this.puedeCrear) {
+
+      return;
+
+    }
+
     this.notifiSeleccionada = notifi;
 
     this.notifiForm.patchValue({
@@ -213,6 +232,12 @@ export class NotifiComponent implements OnInit {
   }
 
   eliminar(id?: string): void {
+
+    if (this.rolActual !== 'admin') {
+
+      return;
+
+    }
 
     if (!id) {
 

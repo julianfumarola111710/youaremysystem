@@ -60,7 +60,7 @@
 
     <main class="contenido">
 
-        <div class="card">
+        <div class="card" *ngIf="puedeCrear">
 
             <h1>Gestión de Ventas</h1>
 
@@ -202,6 +202,18 @@
 
         </div>
 
+        <div class="card" *ngIf="!puedeCrear">
+
+            <h1>Ventas</h1>
+
+            <p class="aviso-guest">
+
+                No tienes permisos para crear o editar ventas. Solo puedes consultar el listado.
+
+            </p>
+
+        </div>
+
         <div class="card">
 
             <h2>Listado de Ventas</h2>
@@ -230,7 +242,7 @@
 
                         <th>Total</th>
 
-                        <th>Acciones</th>
+                        <th *ngIf="puedeCrear">Acciones</th>
 
                     </tr>
 
@@ -286,7 +298,7 @@
 
                         <td>{{ venta.total | currency }}</td>
 
-                        <td>
+                        <td *ngIf="puedeCrear">
 
                             <button
                                 class="editar"
@@ -297,6 +309,7 @@
                             </button>
 
                             <button
+                                *ngIf="rolActual === 'admin'"
                                 class="eliminar"
                                 (click)="eliminar(venta._id)">
 
