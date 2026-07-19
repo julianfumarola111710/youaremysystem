@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
-//User
+
 import {
   FormBuilder,
   FormGroup,
@@ -12,6 +12,7 @@ import {
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { UsuarioService } from '../../core/services/usuario.service';
+import { TokenService } from '../../core/services/token.service';
 
 import { Usuario } from '../../shared/interfaces/usuario.interface';
 import { RouterLink } from '@angular/router';
@@ -36,11 +37,19 @@ export class UsuarioComponent implements OnInit {
 
   usuarioForm: FormGroup;
 
+  rolActual: string = '';
+
+  puedeCrear = false;
+
+  rolesDisponibles: { value: string; label: string }[] = [];
+
   constructor(
 
     private fb: FormBuilder,
 
-    private usuarioService: UsuarioService
+    private usuarioService: UsuarioService,
+
+    private tokenService: TokenService
 
   ) {
 
@@ -52,7 +61,7 @@ export class UsuarioComponent implements OnInit {
 
       password: ['', Validators.required],
 
-      rol: ['user', Validators.required],
+      rol: ['guest', Validators.required],
 
       activo: [true]
 
@@ -61,6 +70,36 @@ export class UsuarioComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    const user = this.tokenService.getUser();
+
+    this.rolActual = user?.rol || '';
+
+    this.puedeCrear = this.rolActual === 'admin' || this.rolActual === 'user';
+
+    if (this.rolActual === 'admin') {
+
+      this.rolesDisponibles = [
+
+        { value: 'guest', label: 'Invitado' },
+
+        { value: 'user', label: 'Usuario' },
+
+        { value: 'admin', label: 'Administrador' }
+
+      ];
+
+    }
+
+    else if (this.rolActual === 'user') {
+
+      this.rolesDisponibles = [
+
+        { value: 'guest', label: 'Invitado' }
+
+      ];
+
+    }
 
     this.cargarUsuarios();
 
@@ -174,6 +213,12 @@ export class UsuarioComponent implements OnInit {
 
   editar(usuario: Usuario): void {
 
+    if (!this.puedeCrear) {
+
+      return;
+
+    }
+
     this.usuarioSeleccionado = usuario;
 
     this.usuarioForm.patchValue({
@@ -193,6 +238,12 @@ export class UsuarioComponent implements OnInit {
   }
 
   eliminar(id?: string): void {
+
+    if (this.rolActual !== 'admin') {
+
+      return;
+
+    }
 
     if (!id) {
 
@@ -234,7 +285,7 @@ export class UsuarioComponent implements OnInit {
 
     this.usuarioForm.reset({
 
-      rol: 'user',
+      rol: 'guest',
 
       activo: true
 

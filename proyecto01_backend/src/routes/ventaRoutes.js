@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
+const verificarToken = require('../middleware/authMiddleware');
+
+const { permitirRoles } = require('../middleware/verificarRol');
+
 const {
     getVentas,
     getVenta,
@@ -9,10 +13,10 @@ const {
     eliminarVenta
 } = require('../controllers/ventaController');
 
-router.get('/', getVentas);
-router.get('/:id', getVenta);
-router.post('/', crearVenta);
-router.put('/:id', actualizarVenta);
-router.delete('/:id', eliminarVenta);
+router.get('/', verificarToken, getVentas);
+router.get('/:id', verificarToken, getVenta);
+router.post('/', verificarToken, permitirRoles('admin', 'user'), crearVenta);
+router.put('/:id', verificarToken, permitirRoles('admin', 'user'), actualizarVenta);
+router.delete('/:id', verificarToken, permitirRoles('admin'), eliminarVenta);
 
 module.exports = router;

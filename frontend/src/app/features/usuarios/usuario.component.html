@@ -20,8 +20,12 @@
                 🏠 Dashboard
             </button>
 
-            <button routerLink="/usuarios">
+            <button
+                class="activo"
+                routerLink="/usuarios">
+
                 👤 Usuarios
+
             </button>
 
             <button routerLink="/clientes">
@@ -56,7 +60,7 @@
 
     <main class="contenido">
 
-        <div class="card">
+        <div class="card" *ngIf="puedeCrear">
 
             <h1>Gestión de Usuarios</h1>
 
@@ -106,15 +110,11 @@
 
                         <select formControlName="rol">
 
-                            <option value="user">
+                            <option
+                                *ngFor="let r of rolesDisponibles"
+                                [value]="r.value">
 
-                                Usuario
-
-                            </option>
-
-                            <option value="admin">
-
-                                Administrador
+                                {{ r.label }}
 
                             </option>
 
@@ -167,6 +167,18 @@
 
         </div>
 
+        <div class="card" *ngIf="!puedeCrear">
+
+            <h1>Usuarios</h1>
+
+            <p class="aviso-guest">
+
+                No tienes permisos para crear o editar usuarios. Solo puedes consultar el listado.
+
+            </p>
+
+        </div>
+
         <div class="card">
 
             <h2>Listado de Usuarios</h2>
@@ -185,7 +197,7 @@
 
                         <th>Activo</th>
 
-                        <th>Acciones</th>
+                        <th *ngIf="puedeCrear">Acciones</th>
 
                     </tr>
 
@@ -207,7 +219,7 @@
 
                         </td>
 
-                        <td>
+                        <td *ngIf="puedeCrear">
 
                             <button
                                 class="editar"
@@ -218,6 +230,7 @@
                             </button>
 
                             <button
+                                *ngIf="rolActual === 'admin'"
                                 class="eliminar"
                                 (click)="eliminar(usuario._id)">
 

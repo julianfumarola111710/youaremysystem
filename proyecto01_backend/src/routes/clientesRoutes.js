@@ -4,6 +4,8 @@ const router = express.Router();
 
 const verificarToken = require('../middleware/authMiddleware');
 
+const { permitirRoles } = require('../middleware/verificarRol');
+
 const {
 
     crearCliente,
@@ -14,14 +16,14 @@ const {
 
 } = require('../controllers/clienteController');
 
-router.post('/', verificarToken, crearCliente);
+router.post('/', verificarToken, permitirRoles('admin', 'user'), crearCliente);
 
 router.get('/', verificarToken, getClientes);
 
 router.get('/:id', verificarToken, getClienteById);
 
-router.put('/:id', verificarToken, actualizarCliente);
+router.put('/:id', verificarToken, permitirRoles('admin', 'user'), actualizarCliente);
 
-router.delete('/:id', verificarToken, eliminarCliente);
+router.delete('/:id', verificarToken, permitirRoles('admin'), eliminarCliente);
 
 module.exports = router;

@@ -1,4 +1,6 @@
 const Actividad = require('../models/Actividad');
+const Usuario = require('../models/usuario');
+const { esNivelIgualOInferior } = require('../utils/roles');
 
 /* ===========================
    Obtener todas
@@ -55,6 +57,26 @@ exports.crearActividad = async (req, res) => {
 
     try {
 
+        const responsableDestino = await Usuario.findById(req.body.responsable);
+
+        if (!responsableDestino) {
+
+            return res.status(404).json({ error: 'Usuario responsable no encontrado' });
+
+        }
+
+        const rolQuienAsigna = req.usuario.rol;
+
+        if (!esNivelIgualOInferior(rolQuienAsigna, responsableDestino.rol)) {
+
+            return res.status(403).json({
+
+                error: 'No puedes asignar actividades a un usuario de nivel superior'
+
+            });
+
+        }
+
         const actividad = await Actividad.create(req.body);
 
         res.status(201).json(actividad);
@@ -73,6 +95,26 @@ exports.crearActividad = async (req, res) => {
 exports.actualizarActividad = async (req, res) => {
 
     try {
+
+        const responsableDestino = await Usuario.findById(req.body.responsable);
+
+        if (!responsableDestino) {
+
+            return res.status(404).json({ error: 'Usuario responsable no encontrado' });
+
+        }
+
+        const rolQuienAsigna = req.usuario.rol;
+
+        if (!esNivelIgualOInferior(rolQuienAsigna, responsableDestino.rol)) {
+
+            return res.status(403).json({
+
+                error: 'No puedes asignar actividades a un usuario de nivel superior'
+
+            });
+
+        }
 
         const actividad = await Actividad.findByIdAndUpdate(
             req.params.id,

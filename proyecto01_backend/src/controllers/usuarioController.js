@@ -8,6 +8,24 @@ const crearUsuario = async (req, res) => {
 
     const { nombre, email, password, rol } = req.body;
 
+    const rolQuienCrea = req.usuario.rol;
+
+    // Admin puede crear admin, user o guest
+    // User solo puede crear guest
+    // Guest no puede crear nada (bloqueado por el middleware en las rutas)
+
+    if (rolQuienCrea === 'user' && rol !== 'guest') {
+
+      return res.status(403).json({
+
+        ok: false,
+
+        mensaje: 'Solo puedes crear usuarios de tipo guest'
+
+      });
+
+    }
+
     // Encriptar contraseña
     const salt = bcrypt.genSaltSync(10);
     const passwordHash = bcrypt.hashSync(password, salt);

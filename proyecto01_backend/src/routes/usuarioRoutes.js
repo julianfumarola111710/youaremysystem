@@ -2,7 +2,9 @@ const express = require('express');
 
 const router = express.Router();
 
-const verificarToken = require('../middleware/authMiddleware'); 
+const verificarToken = require('../middleware/authMiddleware');
+
+const { permitirRoles } = require('../middleware/verificarRol');
 
 const {
 
@@ -19,37 +21,19 @@ const {
 } = require('../controllers/usuarioController');
 
 
-// Crear usuario
-router.post('/',verificarToken, crearUsuario);
+// Crear usuario: admin o user (user solo puede crear guest, validado en el controller)
+router.post('/', verificarToken, permitirRoles('admin', 'user'), crearUsuario);
 
-// Obtener todos los usuarios
-router.get('/',verificarToken, getUsers);
+// Obtener todos los usuarios: cualquier autenticado
+router.get('/', verificarToken, getUsers);
 
-// Obtener usuario por ID
-router.get('/:id',verificarToken, getUserById);
+// Obtener usuario por ID: cualquier autenticado
+router.get('/:id', verificarToken, getUserById);
 
-// Actualizar usuario
+// Actualizar usuario: admin o user
+router.put('/:id', verificarToken, permitirRoles('admin', 'user'), actualizarUsuario);
 
-router.put(
+// Eliminar usuario: solo admin
+router.delete('/:id', verificarToken, permitirRoles('admin'), eliminarUsuario);
 
-  '/:id',
-
-  verificarToken,
-
-  actualizarUsuario
-
-);
-
-
-// Eliminar usuario
-
-router.delete(
-
-  '/:id',
-
-  verificarToken,
-
-  eliminarUsuario
-
-);
 module.exports = router;

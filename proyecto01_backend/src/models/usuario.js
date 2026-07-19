@@ -19,7 +19,7 @@ const UsuarioSchema = new mongoose.Schema(
     },
     rol: {
       type: String,
-      enum: ['admin', 'user'],
+      enum: ['admin', 'user','guest'],
       default: 'user'
     },
     activo: {

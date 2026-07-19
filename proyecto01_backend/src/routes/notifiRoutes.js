@@ -4,6 +4,8 @@ const router = express.Router();
 
 const verificarToken = require('../middleware/authMiddleware');
 
+const { permitirRoles } = require('../middleware/verificarRol');
+
 const {
 
     crearNotifi,
@@ -19,58 +21,14 @@ const {
 } = require('../controllers/notifiController');
 
 
-/* ===========================
-   Crear
-=========================== */
+router.post('/', verificarToken, permitirRoles('admin', 'user'), crearNotifi);
 
-router.post(
-    '/',
-    verificarToken,
-    crearNotifi
-);
+router.get('/', verificarToken, getNotifis);
 
+router.get('/:id', verificarToken, getNotifiById);
 
-/* ===========================
-   Obtener todas
-=========================== */
+router.put('/:id', verificarToken, permitirRoles('admin', 'user'), actualizarNotifi);
 
-router.get(
-    '/',
-    verificarToken,
-    getNotifis
-);
-
-
-/* ===========================
-   Obtener por ID
-=========================== */
-
-router.get(
-    '/:id',
-    verificarToken,
-    getNotifiById
-);
-
-
-/* ===========================
-   Actualizar
-=========================== */
-
-router.put(
-    '/:id',
-    verificarToken,
-    actualizarNotifi
-);
-
-
-/* ===========================
-   Eliminar
-=========================== */
-
-router.delete(
-    '/:id',
-    verificarToken,
-    eliminarNotifi
-);
+router.delete('/:id', verificarToken, permitirRoles('admin'), eliminarNotifi);
 
 module.exports = router;

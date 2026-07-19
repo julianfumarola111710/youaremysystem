@@ -37,6 +37,33 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // Si no existe ningún usuario en la BD, crear un admin
+    // por defecto con el correo y contraseña enviados en este login
+
+    const totalUsuarios = await Usuario.countDocuments();
+
+    if (totalUsuarios === 0) {
+
+      const salt = bcrypt.genSaltSync(10);
+
+      const passwordHash = bcrypt.hashSync(password, salt);
+
+      await Usuario.create({
+
+        nombre: 'Administrador',
+
+        email,
+
+        password: passwordHash,
+
+        rol: 'admin',
+
+        activo: true
+
+      });
+
+    }
+
     // 1. Buscar usuario
     const usuario = await Usuario.findOne({ email });
     if (!usuario) {

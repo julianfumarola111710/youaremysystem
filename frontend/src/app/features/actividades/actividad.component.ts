@@ -14,10 +14,21 @@ import {
 import { ActividadService } from '../../core/services/actividad.service';
 import { ClienteService } from '../../core/services/cliente.service';
 import { UsuarioService } from '../../core/services/usuario.service';
+import { TokenService } from '../../core/services/token.service';
 
 import { Actividad } from '../../shared/interfaces/actividad.interface';
 import { Cliente } from '../../shared/interfaces/cliente.interface';
 import { Usuario } from '../../shared/interfaces/usuario.interface';
+
+const NIVELES_ROL: { [key: string]: number } = {
+
+  guest: 1,
+
+  user: 2,
+
+  admin: 3
+
+};
 
 @Component({
   selector: 'app-actividad',
@@ -39,9 +50,15 @@ export class ActividadComponent implements OnInit {
 
   usuarios: Usuario[] = [];
 
+  usuariosDisponibles: Usuario[] = [];
+
   actividadSeleccionada: Actividad | null = null;
 
   actividadForm: FormGroup;
+
+  rolActual: string = '';
+
+  puedeCrear = false;
 
   constructor(
 
@@ -51,7 +68,9 @@ export class ActividadComponent implements OnInit {
 
     private clienteService: ClienteService,
 
-    private usuarioService: UsuarioService
+    private usuarioService: UsuarioService,
+
+    private tokenService: TokenService
 
   ) {
 
@@ -70,6 +89,12 @@ export class ActividadComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    const user = this.tokenService.getUser();
+
+    this.rolActual = user?.rol || '';
+
+    this.puedeCrear = this.rolActual === 'admin' || this.rolActual === 'user';
 
     this.cargarActividades();
 
@@ -126,6 +151,14 @@ export class ActividadComponent implements OnInit {
       next: (data: Usuario[]) => {
 
         this.usuarios = data;
+
+        const nivelActual = NIVELES_ROL[this.rolActual] || 0;
+
+        this.usuariosDisponibles = data.filter(
+
+          u => (NIVELES_ROL[u.rol] || 0) <= nivelActual
+
+        );
 
       },
 
@@ -227,6 +260,12 @@ export class ActividadComponent implements OnInit {
 
   editar(actividad: Actividad): void {
 
+    if (!this.puedeCrear) {
+
+      return;
+
+    }
+
     this.actividadSeleccionada = actividad;
 
     this.actividadForm.patchValue({
@@ -250,6 +289,12 @@ export class ActividadComponent implements OnInit {
   }
 
   eliminar(id?: string): void {
+
+    if (this.rolActual !== 'admin') {
+
+      return;
+
+    }
 
     if (!id) {
 
