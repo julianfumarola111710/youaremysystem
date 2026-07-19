@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 //
 // Función auxiliar: genera Access Token (15 min)
-3
+//
 const generarAccessToken = (usuario) => {
   return jwt.sign(
     {
@@ -36,33 +36,6 @@ const generarRefreshToken = (usuario) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // Si no existe ningún usuario en la BD, crear un admin
-    // por defecto con el correo y contraseña enviados en este login
-
-    const totalUsuarios = await Usuario.countDocuments();
-
-    if (totalUsuarios === 0) {
-
-      const salt = bcrypt.genSaltSync(10);
-
-      const passwordHash = bcrypt.hashSync(password, salt);
-
-      await Usuario.create({
-
-        nombre: 'Administrador',
-
-        email,
-
-        password: passwordHash,
-
-        rol: 'admin',
-
-        activo: true
-
-      });
-
-    }
 
     // 1. Buscar usuario
     const usuario = await Usuario.findOne({ email });
@@ -120,7 +93,6 @@ const refreshToken = async (req, res) => {
   try {
     const { refreshToken } = req.body;
 
-    //  Verificar que se envió el token
     if (!refreshToken) {
       return res.status(401).json({
         ok: false,
@@ -128,7 +100,6 @@ const refreshToken = async (req, res) => {
       });
     }
 
-    //  Verificar que el token es válido y no expiró
     let decoded;
     try {
       decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
@@ -139,7 +110,6 @@ const refreshToken = async (req, res) => {
       });
     }
 
-    //  Buscar usuario y validar que el token coincide con el guardado en BD
     const usuario = await Usuario.findById(decoded.uid);
     if (!usuario || usuario.refreshToken !== refreshToken) {
       return res.status(401).json({
@@ -148,10 +118,8 @@ const refreshToken = async (req, res) => {
       });
     }
 
-    // 4. Generar nuevo Access Token
     const nuevoAccessToken = generarAccessToken(usuario);
 
-    // 5. Respuesta
     res.json({
       ok: true,
       mensaje: 'Access Token renovado',
@@ -181,7 +149,6 @@ const logout = async (req, res) => {
       });
     }
 
-    // Eliminar el Refresh Token de la BD (invalida la sesión)
     const usuario = await Usuario.findOneAndUpdate(
       { refreshToken },
       { refreshToken: null }

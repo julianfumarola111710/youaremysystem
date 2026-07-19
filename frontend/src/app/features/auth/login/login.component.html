@@ -9,6 +9,12 @@
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
 
+      <div class="mensaje-error-login" *ngIf="mensajeError">
+
+        {{ mensajeError }}
+
+      </div>
+
       <div class="form-field">
         <label for="email">Correo electrónico</label>
         <input

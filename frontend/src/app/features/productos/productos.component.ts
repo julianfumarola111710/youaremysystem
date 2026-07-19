@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   FormBuilder,
   FormGroup,
@@ -10,7 +11,7 @@ import { RouterLink } from '@angular/router';
 
 import { ProductoService } from '../../core/services/producto.service';
 import { TokenService } from '../../core/services/token.service';
-import { Producto } from '../../shared/interfaces/producto.interface';
+import { Producto, ProductosResponse, ProductoResponse } from '../../shared/interfaces/producto.interface';
 
 @Component({
   selector: 'app-productos',
@@ -100,11 +101,11 @@ export class ProductosComponent implements OnInit {
     this.cargando = true;
 
     this.productoService.getProductos().subscribe({
-      next: response => {
+      next: (response: ProductosResponse) => {
         this.productos = response.productos;
         this.cargando = false;
       },
-      error: error => {
+      error: (error: HttpErrorResponse) => {
         this.mostrarError(
           error.error?.mensaje ||
           'No se pudieron cargar los productos'
@@ -153,9 +154,9 @@ export class ProductosComponent implements OnInit {
     this.productoService
       .crearProducto(producto)
       .subscribe({
-        next: response => {
+        next: (response: ProductoResponse) => {
           this.mensajeExito =
-            response.mensaje ||
+            (response as any).mensaje ||
             'Producto creado correctamente';
 
           this.mensajeError = '';
@@ -163,7 +164,7 @@ export class ProductosComponent implements OnInit {
           this.limpiarFormulario(false);
           this.cargarProductos();
         },
-        error: error => {
+        error: (error: HttpErrorResponse) => {
           this.procesarError(error);
         }
       });
@@ -176,9 +177,9 @@ export class ProductosComponent implements OnInit {
     this.productoService
       .actualizarProducto(id, producto)
       .subscribe({
-        next: response => {
+        next: (response: ProductoResponse) => {
           this.mensajeExito =
-            response.mensaje ||
+            (response as any).mensaje ||
             'Producto actualizado correctamente';
 
           this.mensajeError = '';
@@ -186,7 +187,7 @@ export class ProductosComponent implements OnInit {
           this.limpiarFormulario(false);
           this.cargarProductos();
         },
-        error: error => {
+        error: (error: HttpErrorResponse) => {
           this.procesarError(error);
         }
       });
@@ -234,16 +235,16 @@ export class ProductosComponent implements OnInit {
     this.productoService
       .eliminarProducto(producto._id)
       .subscribe({
-        next: response => {
+        next: (response: ProductoResponse) => {
           this.mensajeExito =
-            response.mensaje ||
+            (response as any).mensaje ||
             'Producto eliminado correctamente';
 
           this.mensajeError = '';
 
           this.cargarProductos();
         },
-        error: error => {
+        error: (error: HttpErrorResponse) => {
           this.procesarError(error);
         }
       });
@@ -283,7 +284,7 @@ export class ProductosComponent implements OnInit {
     }
   }
 
-  private procesarError(error: any): void {
+  private procesarError(error: HttpErrorResponse): void {
     const errores = error.error?.errores;
 
     if (

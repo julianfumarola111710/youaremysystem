@@ -9,6 +9,7 @@ import {
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { TokenService } from '../../../core/services/token.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -24,6 +25,8 @@ export class LoginComponent {
 
   loginForm: FormGroup;
 
+  mensajeError = '';
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -37,6 +40,9 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
+
+    this.mensajeError = '';
+
     if (this.loginForm.invalid) {
       return;
     }
@@ -44,19 +50,19 @@ export class LoginComponent {
     const { email, password } = this.loginForm.value;
 
     this.authService.login(email, password).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         this.tokenService.saveSession(
           response.accessToken,
           response.refreshToken,
           response.usuario
         );
 
-        console.log('LOGIN EXITOSO');
         this.router.navigate(['/dashboard']);
       },
-      error: (error) => {
-        console.error('ERROR LOGIN');
-        console.error(error);
+      error: (error: HttpErrorResponse) => {
+
+        this.mensajeError = 'Credenciales incorrectas. Verifique su correo y contraseña.';
+
       }
     });
   }
