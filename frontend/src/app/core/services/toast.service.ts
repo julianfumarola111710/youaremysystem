@@ -35,11 +35,11 @@ export class ToastService {
 
     const id = this.contador++;
 
-    this.mensajes.update(lista => [...lista, { id, texto, tipo }]);
+    this.mensajes.update((lista: ToastMensaje[]): ToastMensaje[] => [...lista, { id, texto, tipo }]);
 
-    setTimeout(() => {
+    setTimeout((): void => {
 
-      this.mensajes.update(lista => lista.filter(m => m.id !== id));
+      this.mensajes.update((lista: ToastMensaje[]): ToastMensaje[] => lista.filter((m: ToastMensaje) => m.id !== id));
 
     }, 3500);
 
