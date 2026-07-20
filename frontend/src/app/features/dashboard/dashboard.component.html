@@ -266,108 +266,108 @@
 
             <!-- PIE CHART: VENTAS POR USUARIO -->
 
-            <div class="card">
+            <div class="doble-columna">
 
-                <h2>Ventas por usuario</h2>
+                <!-- PIE CHART: VENTAS POR USUARIO -->
 
-                <div *ngIf="usuariosPie.length === 0" class="sin-datos">
+                <div class="card">
 
-                    Aún no hay ventas registradas.
+                    <h2>Ventas por usuario</h2>
 
-                </div>
+                    <div *ngIf="usuariosPie.length === 0" class="sin-datos">
 
-                <div class="pie-container" *ngIf="usuariosPie.length > 0">
+                        Aún no hay ventas registradas.
 
-                    <div
-                        class="pie-chart"
-                        [style.background]="pieGradient">
                     </div>
 
-                    <div class="pie-leyenda">
+                    <div class="pie-container" *ngIf="usuariosPie.length > 0">
 
                         <div
-                            class="leyenda-item"
-                            *ngFor="let u of usuariosPie">
-
-                            <span
-                                class="leyenda-color"
-                                [style.background]="u.color">
-                            </span>
-
-                            <span class="leyenda-nombre">{{ u.nombre }}</span>
-
-                            <span class="leyenda-valor">
-
-                                {{ u.cantidadVentas }} ({{ u.porcentaje }}%)
-
-                            </span>
-
+                            class="pie-chart"
+                            [style.background]="pieGradient">
                         </div>
 
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- PUNTO DE REORDEN -->
-
-            <div class="card">
-
-                <h2>Punto de reorden de inventario</h2>
-
-                <p class="subtexto-card">
-
-                    Productos con stock por debajo del mínimo recomendado (5 unidades)
-
-                </p>
-
-                <div *ngIf="productosStockBajo.length === 0" class="sin-datos ok-stock">
-
-                    ✅ Todos los productos tienen stock saludable.
-
-                </div>
-
-                <div
-                    class="stock-item"
-                    *ngFor="let p of productosStockBajo">
-
-                    <div class="stock-alerta-icono">⚠️</div>
-
-                    <div class="ranking-detalle">
-
-                        <div class="ranking-nombre">
-
-                            <span>{{ p.nombre }}</span>
-
-                            <span class="stock-numero">{{ p.stock }} uds</span>
-
-                        </div>
-
-                        <div class="ranking-barra-fondo">
+                        <div class="pie-leyenda">
 
                             <div
-                                class="ranking-barra stock-barra"
-                                [style.width.%]="obtenerPorcentajeStock(p.stock)">
+                                class="leyenda-item"
+                                *ngFor="let u of usuariosPie">
+
+                                <span
+                                    class="leyenda-color"
+                                    [style.background]="u.color">
+                                </span>
+
+                                <span class="leyenda-nombre">{{ u.nombre }}</span>
+
+                                <span class="leyenda-valor">
+
+                                    {{ u.cantidadVentas }} ({{ u.porcentaje }}%)
+
+                                </span>
 
                             </div>
 
                         </div>
 
-                        <span class="ranking-cantidad stock-mensaje">
+                    </div>
 
-                            Stock crítico — se generó notificación automática
+                </div>
 
-                        </span>
+                <!-- PUNTO DE REORDEN -->
+
+                <div class="card">
+
+                    <h2>Punto de reorden de inventario</h2>
+
+                    <p class="subtexto-card">
+
+                        Productos con stock por debajo del mínimo recomendado (5 unidades)
+
+                    </p>
+
+                    <div *ngIf="productosStockBajo.length === 0" class="sin-datos ok-stock">
+
+                        ✅ Todos los productos tienen stock saludable.
+
+                    </div>
+
+                    <div
+                        class="stock-item"
+                        *ngFor="let p of productosStockBajo">
+
+                        <div class="stock-alerta-icono">⚠️</div>
+
+                        <div class="ranking-detalle">
+
+                            <div class="ranking-nombre">
+
+                                <span>{{ p.nombre }}</span>
+
+                                <span class="stock-numero">{{ p.stock }} uds</span>
+
+                            </div>
+
+                            <div class="ranking-barra-fondo">
+
+                                <div
+                                    class="ranking-barra stock-barra"
+                                    [style.width.%]="obtenerPorcentajeStock(p.stock)">
+
+                                </div>
+
+                            </div>
+
+                            <span class="ranking-cantidad stock-mensaje">
+
+                                Stock crítico — se generó notificación automática
+
+                            </span>
+
+                        </div>
 
                     </div>
 
                 </div>
 
             </div>
-
-        </div>
-
-    </main>
-
-</div>

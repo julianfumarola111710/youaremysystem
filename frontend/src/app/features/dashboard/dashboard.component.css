@@ -269,8 +269,8 @@ nav button:hover{
 }
 
 .pie-chart{
-    width:220px;
-    height:220px;
+    width:160px;
+    height:160px;
     border-radius:50%;
     flex-shrink:0;
     box-shadow:0 4px 10px rgba(0,0,0,.1);
