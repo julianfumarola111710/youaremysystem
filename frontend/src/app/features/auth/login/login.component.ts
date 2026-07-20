@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -21,11 +21,17 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrl: './login.component.css'
 })
 
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
   loginForm: FormGroup;
 
   mensajeError = '';
+
+  verificandoUsuarios = true;
+
+  hayUsuarios = true;
+
+  creandoAdmin = false;
 
   constructor(
     private fb: FormBuilder,
@@ -37,6 +43,31 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]]
     });
+  }
+
+  ngOnInit(): void {
+
+    this.authService.existeUsuarios().subscribe({
+
+      next: (response: { ok: boolean; existeUsuarios: boolean }) => {
+
+        this.hayUsuarios = response.existeUsuarios;
+
+        this.verificandoUsuarios = false;
+
+      },
+
+      error: () => {
+
+        // Si falla la verificación, mostramos el login normal por seguridad
+        this.hayUsuarios = true;
+
+        this.verificandoUsuarios = false;
+
+      }
+
+    });
+
   }
 
   onSubmit(): void {
@@ -65,5 +96,46 @@ export class LoginComponent {
 
       }
     });
+  }
+
+  crearAdminInicial(): void {
+
+    this.creandoAdmin = true;
+
+    this.mensajeError = '';
+
+    this.authService.crearAdminInicial().subscribe({
+
+      next: (response: any) => {
+
+        this.tokenService.saveSession(
+
+          response.accessToken,
+
+          response.refreshToken,
+
+          response.usuario
+
+        );
+
+        this.creandoAdmin = false;
+
+        this.router.navigate(['/dashboard']);
+
+      },
+
+      error: (error: HttpErrorResponse) => {
+
+        this.creandoAdmin = false;
+
+        this.mensajeError = error.error?.mensaje || 'No se pudo crear el usuario administrador';
+
+        // Si falló porque ya existen usuarios, mostramos el login normal
+        this.hayUsuarios = true;
+
+      }
+
+    });
+
   }
 }

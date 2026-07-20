@@ -31,13 +31,132 @@ const generarRefreshToken = (usuario) => {
 };
 
 //
+// GET /api/auth/existe-usuarios
+//
+const existeUsuarios = async (req, res) => {
+
+  try {
+
+    const total = await Usuario.countDocuments();
+
+    res.json({
+
+      ok: true,
+
+      existeUsuarios: total > 0
+
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+
+      ok: false,
+
+      mensaje: 'Error al verificar usuarios'
+
+    });
+
+  }
+
+};
+
+//
+// POST /api/auth/crear-admin-inicial
+//
+const crearAdminInicial = async (req, res) => {
+
+  try {
+
+    const total = await Usuario.countDocuments();
+
+    if (total > 0) {
+
+      return res.status(400).json({
+
+        ok: false,
+
+        mensaje: 'Ya existen usuarios registrados. No se puede crear el admin inicial.'
+
+      });
+
+    }
+
+    const salt = bcrypt.genSaltSync(10);
+
+    const passwordHash = bcrypt.hashSync('Admin123*', salt);
+
+    const usuario = await Usuario.create({
+
+      nombre: 'Administrador',
+
+      email: 'admin@crm.com',
+
+      password: passwordHash,
+
+      rol: 'admin',
+
+      activo: true
+
+    });
+
+    // Generar tokens y loguear automáticamente
+
+    const accessToken = generarAccessToken(usuario);
+
+    const refreshToken = generarRefreshToken(usuario);
+
+    usuario.refreshToken = refreshToken;
+
+    await usuario.save();
+
+    res.status(201).json({
+
+      ok: true,
+
+      mensaje: 'Usuario administrador creado correctamente',
+
+      accessToken,
+
+      refreshToken,
+
+      usuario: {
+
+        id: usuario._id,
+
+        nombre: usuario.nombre,
+
+        email: usuario.email,
+
+        rol: usuario.rol
+
+      }
+
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+
+      ok: false,
+
+      mensaje: 'Error al crear el administrador inicial'
+
+    });
+
+  }
+
+};
+
+//
 // POST /api/auth/login
 //
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // 1. Buscar usuario
     const usuario = await Usuario.findOne({ email });
     if (!usuario) {
       return res.status(400).json({
@@ -46,7 +165,6 @@ const login = async (req, res) => {
       });
     }
 
-    // 2. Validar contraseña
     const passwordValido = bcrypt.compareSync(password, usuario.password);
     if (!passwordValido) {
       return res.status(400).json({
@@ -55,15 +173,12 @@ const login = async (req, res) => {
       });
     }
 
-    // 3. Generar Access Token y Refresh Token
     const accessToken  = generarAccessToken(usuario);
     const refreshToken = generarRefreshToken(usuario);
 
-    // 4. Guardar Refresh Token en la base de datos
     usuario.refreshToken = refreshToken;
     await usuario.save();
 
-    // 5. Respuesta
     res.json({
       ok: true,
       mensaje: 'Login exitoso',
@@ -178,5 +293,7 @@ const logout = async (req, res) => {
 module.exports = {
   login,
   refreshToken,
-  logout
+  logout,
+  existeUsuarios,
+  crearAdminInicial
 };

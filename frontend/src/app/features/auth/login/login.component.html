@@ -7,7 +7,49 @@
       <p class="brand-subtitle">Acceso al sistema</p>
     </div>
 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+    <div *ngIf="verificandoUsuarios" class="verificando">
+
+      Verificando sistema...
+
+    </div>
+
+    <div *ngIf="!verificandoUsuarios && !hayUsuarios" class="primer-uso">
+
+      <p class="primer-uso-texto">
+
+        No se detectaron usuarios en el sistema. Cree el administrador inicial para comenzar.
+
+      </p>
+
+      <div class="mensaje-error-login" *ngIf="mensajeError">
+
+        {{ mensajeError }}
+
+      </div>
+
+      <button
+        type="button"
+        class="btn-login"
+        [disabled]="creandoAdmin"
+        (click)="crearAdminInicial()">
+
+        {{ creandoAdmin ? 'Creando administrador...' : 'Crear usuario administrador' }}
+
+      </button>
+
+      <p class="primer-uso-credenciales">
+
+        Correo: admin&#64;crm.com — Contraseña: Admin123*
+
+      </p>
+
+    </div>
+
+    <form
+      *ngIf="!verificandoUsuarios && hayUsuarios"
+      [formGroup]="loginForm"
+      (ngSubmit)="onSubmit()"
+      class="login-form">
 
       <div class="mensaje-error-login" *ngIf="mensajeError">
 

@@ -24,6 +24,19 @@ export class AuthService {
     );
   }
 
+  existeUsuarios(): Observable<{ ok: boolean; existeUsuarios: boolean }> {
+    return this.http.get<{ ok: boolean; existeUsuarios: boolean }>(
+      `${this.apiUrl}/auth/existe-usuarios`
+    );
+  }
+
+  crearAdminInicial(): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(
+      `${this.apiUrl}/auth/crear-admin-inicial`,
+      {}
+    );
+  }
+
   /* Logout profesional — devuelve Observable para que
      el componente redirija solo cuando el backend confirmó */
   logout(): Observable<any> {
@@ -33,11 +46,13 @@ export class AuthService {
       { refreshToken }
     );
   }
-getAccessToken(): string | null {
 
-  return localStorage.getItem('accessToken');
+  getAccessToken(): string | null {
 
-}
+    return localStorage.getItem('accessToken');
+
+  }
+
   /* Actualizar únicamente el Access Token */
   updateAccessToken(accessToken: string): void {
     localStorage.setItem('accessToken', accessToken);
@@ -47,6 +62,7 @@ getAccessToken(): string | null {
   getRefreshToken(): string | null {
     return localStorage.getItem('refreshToken');
   }
+
 
   /* Solicitar un nuevo Access Token al backend */
   refreshAccessToken() {
